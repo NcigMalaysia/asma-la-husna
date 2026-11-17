@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hafalan 99 Nama Allah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .arabic-font {
+            font-family: 'Amiri', serif;
+        }
+        
+        /* Slide Transitions */
+        .slide-container {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .fade-out-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        .fade-out-right {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        /* Custom Scrollbar for list */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="w-full p-6 text-center z-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400 drop-shadow-md">
+            Asmaul Husna
+        </h1>
+        <p class="text-slate-400 mt-2 text-sm md:text-base">Hafalan 99 Nama Allah</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4 md:px-8 w-full max-w-2xl mx-auto z-10">
+        
+        <!-- Top Controls (Counter & Reset) -->
+        <div class="w-full flex justify-between items-center mb-6 px-2">
+            <div class="text-teal-300 font-semibold bg-teal-900/50 px-4 py-1.5 rounded-full border border-teal-700/50">
+                <span id="counter">1</span> / 99
+            </div>
+            <button onclick="resetProgress()" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Mula Semula
+            </button>
+        </div>
+
+        <!-- The Card -->
+        <div class="w-full h-[400px] md:h-[450px] mb-8 slide-container relative" id="slideContainer">
+            <div class="w-full h-full bg-gradient-to-br from-teal-800 to-emerald-900 rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center shadow-2xl border border-teal-600/30 relative overflow-hidden">
+                
+                <!-- Audio Button -->
+                <button onclick="playCurrentNameAudio()" class="absolute top-4 right-4 md:top-6 md:right-6 text-teal-200 hover:text-white bg-teal-900/60 hover:bg-teal-700 p-3 rounded-full transition-all z-20 shadow-md backdrop-blur-sm border border-teal-600/50" title="Dengar Sebutan">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                </button>
+
+                <!-- Background number -->
+                <div class="absolute -right-4 -bottom-10 text-teal-900/40 text-[10rem] md:text-[12rem] font-black z-0 leading-none" id="cardNumberBg">1</div>
+
+                <h2 class="arabic-font text-7xl md:text-8xl text-white mb-6 leading-tight text-center drop-shadow-lg z-10" id="arabicText">
+                    الرَّحْمَنُ
+                </h2>
+                
+                <div class="w-2/3 border-t border-teal-600/50 my-4 z-10"></div>
+                
+                <h3 class="text-3xl md:text-4xl font-bold text-yellow-300 tracking-wide text-center mb-3 z-10" id="rumiText">
+                    Ar-Rahman
+                </h3>
+                
+                <p class="text-2xl md:text-3xl font-medium text-teal-100 text-center z-10" id="meaningText">
+                    Maha Pemurah
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex items-center justify-between w-full max-w-sm gap-4">
+            <button onclick="prevName()" id="prevBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-semibold py-4 px-6 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 border border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Sebelum
+            </button>
+            <button onclick="nextName()" id="nextBtn" class="flex-1 bg-teal-600 hover:bg-teal-500 active:bg-teal-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-teal-900/50 flex items-center justify-center gap-2 border border-teal-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                Seterus
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+
+        <p class="text-slate-500 mt-8 text-sm text-center px-4">
+            💡 Tips: Anda boleh meleret (swipe) kiri/kanan pada skrin atau guna kekunci anak panah untuk ke nama seterusnya.
+        </p>
+
+    </main>
+
+    <!-- Background Decorative Elements -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-900/30 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-900/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <script>
+        // Database of 99 Names of Allah
+        const asmaulHusna = [
+            { id: 1, arabic: "الرَّحْمَنُ", rumi: "Ar-Rahman", meaning: "Maha Pemurah" },
+            { id: 2, arabic: "الرَّحِيمُ", rumi: "Ar-Rahim", meaning: "Maha Penyayang" },
+            { id: 3, arabic: "الْمَلِكُ", rumi: "Al-Malik", meaning: "Maha Merajai / Menguasai" },
+            { id: 4, arabic: "الْقُدُّوسُ", rumi: "Al-Quddus", meaning: "Maha Suci" },
+            { id: 5, arabic: "السَّلَامُ", rumi: "As-Salam", meaning: "Maha Penyelamat / Sejahtera" },
+            { id: 6, arabic: "الْمُؤْمِنُ", rumi: "Al-Mu'min", meaning: "Maha Melimpahkan Keamanan" },
+            { id: 7, arabic: "الْمُهَيْمِنُ", rumi: "Al-Muhaymin", meaning: "Maha Pengawal / Penjaga" },
+            { id: 8, arabic: "الْعَزِيزُ", rumi: "Al-Aziz", meaning: "Maha Berkuasa" },
+            { id: 9, arabic: "الْجَبَّارُ", rumi: "Al-Jabbar", meaning: "Maha Kuat / Perkasa" },
+            { id: 10, arabic: "الْمُتَكَبِّرُ", rumi: "Al-Mutakabbir", meaning: "Maha Megah" },
+            { id: 11, arabic: "الْخَالِقُ", rumi: "Al-Khaliq", meaning: "Maha Pencipta" },
+            { id: 12, arabic: "الْبَارِئُ", rumi: "Al-Bari'", meaning: "Maha Menjadikan" },
+            { id: 13, arabic: "الْمُصَوِّرُ", rumi: "Al-Musawwir", meaning: "Maha Membentuk Rupa" },
+            { id: 14, arabic: "الْغَفَّارُ", rumi: "Al-Ghaffar", meaning: "Maha Pengampun" },
+            { id: 15, arabic: "الْقَهَّارُ", rumi: "Al-Qahhar", meaning: "Maha Menundukkan Segala-galanya" },
+            { id: 16, arabic: "الْوَهَّابُ", rumi: "Al-Wahhab", meaning: "Maha Pemberi Kurnia" },
+            { id: 17, arabic: "الرَّزَّاقُ", rumi: "Ar-Razzaq", meaning: "Maha Pemberi Rezeki" },
+            { id: 18, arabic: "الْفَتَّاحُ", rumi: "Al-Fattah", meaning: "Maha Pembuka Rahmat" },
+            { id: 19, arabic: "الْعَلِيمُ", rumi: "Al-Alim", meaning: "Maha Mengetahui" },
+            { id: 20, arabic: "الْقَابِضُ", rumi: "Al-Qabidz", meaning: "Maha Pengekang" },
+            { id: 21, arabic: "الْبَاسِطُ", rumi: "Al-Basit", meaning: "Maha Melapangkan" },
+            { id: 22, arabic: "الْخَافِضُ", rumi: "Al-Khafidz", meaning: "Maha Merendahkan (Darjat)" },
+            { id: 23, arabic: "الرَّافِعُ", rumi: "Ar-Rafi'", meaning: "Maha Meninggikan (Darjat)" },
+            { id: 24, arabic: "الْمُعِزُّ", rumi: "Al-Mu'izz", meaning: "Maha Memuliakan" },
+            { id: 25, arabic: "الْمُذِلِّ", rumi: "Al-Muzill", meaning: "Maha Menghinakan" },
+            { id: 26, arabic: "السَّمِيعُ", rumi: "As-Sami'", meaning: "Maha Mendengar" },
+            { id: 27, arabic: "الْبَصِيرُ", rumi: "Al-Basir", meaning: "Maha Melihat" },
+            { id: 28, arabic: "الْحَكَمُ", rumi: "Al-Hakam", meaning: "Maha Menetapkan Hukum" },
+            { id: 29, arabic: "الْعَدْلُ", rumi: "Al-'Adl", meaning: "Maha Adil" },
+            { id: 30, arabic: "اللَّطِيفُ", rumi: "Al-Latif", meaning: "Maha Lembut / Halus" },
+            { id: 31, arabic: "الْخَبِيرُ", rumi: "Al-Khabir", meaning: "Maha Waspada / Mengetahui" },
+            { id: 32, arabic: "الْحَلِيمُ", rumi: "Al-Halim", meaning: "Maha Penyabar" },
+            { id: 33, arabic: "الْعَظِيمُ", rumi: "Al-'Azim", meaning: "Maha Agung" },
+            { id: 34, arabic: "الْغَفُورُ", rumi: "Al-Ghafur", meaning: "Maha Pengampun" },
+            { id: 35, arabic: "الشَّكُورُ", rumi: "Ash-Shakur", meaning: "Maha Menghargai / Mensyukuri" },
+            { id: 36, arabic: "الْعَلِيُّ", rumi: "Al-'Aliy", meaning: "Maha Tinggi" },
+            { id: 37, arabic: "الْكَبِيرُ", rumi: "Al-Kabir", meaning: "Maha Besar" },
+            { id: 38, arabic: "الْحَفِيظُ", rumi: "Al-Hafidz", meaning: "Maha Memelihara" },
+            { id: 39, arabic: "الْمُقِيتُ", rumi: "Al-Muqit", meaning: "Maha Menjaga / Memberi Keperluan" },
+            { id: 40, arabic: "الْحَسِيبُ", rumi: "Al-Hasib", meaning: "Maha Menghitung" },
+            { id: 41, arabic: "الْجَلِيلُ", rumi: "Al-Jalil", meaning: "Maha Luhur" },
+            { id: 42, arabic: "الْكَرِيمُ", rumi: "Al-Karim", meaning: "Maha Pemurah / Mulia" },
+            { id: 43, arabic: "الرَّقِيبُ", rumi: "Ar-Raqib", meaning: "Maha Mengawasi" },
+            { id: 44, arabic: "الْمُجِيبُ", rumi: "Al-Mujib", meaning: "Maha Mengabulkan" },
+            { id: 45, arabic: "الْوَاسِعُ", rumi: "Al-Wasi'", meaning: "Maha Luas (Ilmu & Rahmat)" },
+            { id: 46, arabic: "الْحَكِيمُ", rumi: "Al-Hakim", meaning: "Maha Bijaksana" },
+            { id: 47, arabic: "الْوَدُودُ", rumi: "Al-Wadud", meaning: "Maha Pencinta" },
+            { id: 48, arabic: "الْمَجِيدُ", rumi: "Al-Majid", meaning: "Maha Mulia" },
+            { id: 49, arabic: "الْبَاعِثُ", rumi: "Al-Ba'ith", meaning: "Maha Membangkitkan" },
+            { id: 50, arabic: "الشَّهِيدُ", rumi: "Ash-Shahid", meaning: "Maha Menyaksikan" },
+            { id: 51, arabic: "الْحَقُّ", rumi: "Al-Haqq", meaning: "Maha Benar" },
+            { id: 52, arabic: "الْوَكِيلُ", rumi: "Al-Wakil", meaning: "Maha Memelihara Penyerahan" },
+            { id: 53, arabic: "الْقَوِيُّ", rumi: "Al-Qawiy", meaning: "Maha Kuat" },
+            { id: 54, arabic: "الْمَتِينُ", rumi: "Al-Matin", meaning: "Maha Teguh" },
+            { id: 55, arabic: "الْوَلِيُّ", rumi: "Al-Waliy", meaning: "Maha Melindungi" },
+            { id: 56, arabic: "الْحَمِيدُ", rumi: "Al-Hamid", meaning: "Maha Terpuji" },
+            { id: 57, arabic: "الْمُحْصِي", rumi: "Al-Muhsi", meaning: "Maha Penghitung Segala Sesuatu" },
+            { id: 58, arabic: "الْمُبْدِئُ", rumi: "Al-Mubdi'", meaning: "Maha Memulai" },
+            { id: 59, arabic: "الْمُعِيدُ", rumi: "Al-Mu'id", meaning: "Maha Mengembalikan Kehidupan" },
+            { id: 60, arabic: "الْمُحْيِي", rumi: "Al-Muhyi", meaning: "Maha Menghidupkan" },
+            { id: 61, arabic: "اَلْمُمِيتُ", rumi: "Al-Mumit", meaning: "Maha Mematikan" },
+            { id: 62, arabic: "الْحَيُّ", rumi: "Al-Hayy", meaning: "Maha Hidup" },
+            { id: 63, arabic: "الْقَيُّومُ", rumi: "Al-Qayyum", meaning: "Maha Berdiri Sendiri" },
+            { id: 64, arabic: "الْوَاجِدُ", rumi: "Al-Wajid", meaning: "Maha Penemu" },
+            { id: 65, arabic: "الْمَاجِدُ", rumi: "Al-Majid", meaning: "Maha Mulia" },
+            { id: 66, arabic: "الْوَاحِدُ", rumi: "Al-Wahid", meaning: "Maha Esa" },
+            { id: 67, arabic: "الْأَحَدُ", rumi: "Al-Ahad", meaning: "Maha Satu" },
+            { id: 68, arabic: "الصَّمَدُ", rumi: "As-Samad", meaning: "Maha Diperlukan / Tempat Bergantung" },
+            { id: 69, arabic: "الْقَادِرُ", rumi: "Al-Qadir", meaning: "Maha Menentukan / Berkuasa" },
+            { id: 70, arabic: "الْمُقْتَدِرُ", rumi: "Al-Muqtadir", meaning: "Maha Berkuasa" },
+            { id: 71, arabic: "الْمُقَدِّمُ", rumi: "Al-Muqaddim", meaning: "Maha Mendahulukan" },
+            { id: 72, arabic: "الْمُؤَخِّرُ", rumi: "Al-Mu'akhkhir", meaning: "Maha Mengakhirkan" },
+            { id: 73, arabic: "الْأَوَّلُ", rumi: "Al-Awwal", meaning: "Maha Awal" },
+            { id: 74, arabic: "الْآخِرُ", rumi: "Al-Akhir", meaning: "Maha Akhir" },
+            { id: 75, arabic: "الظَّاهِرُ", rumi: "Az-Zahir", meaning: "Maha Nyata" },
+            { id: 76, arabic: "الْبَاطِنُ", rumi: "Al-Batin", meaning: "Maha Tersembunyi" },
+            { id: 77, arabic: "الْوَالِي", rumi: "Al-Wali", meaning: "Maha Memerintah" },
+            { id: 78, arabic: "الْمُتَعَالِي", rumi: "Al-Muta'ali", meaning: "Maha Tinggi & Agung" },
+            { id: 79, arabic: "الْبَرُّ", rumi: "Al-Barr", meaning: "Maha Penderma / Baik" },
+            { id: 80, arabic: "التَّوَّابُ", rumi: "At-Tawwab", meaning: "Maha Penerima Taubat" },
+            { id: 81, arabic: "الْمُنْتَقِمُ", rumi: "Al-Muntaqim", meaning: "Maha Penyiksa / Penuntut Balas" },
+            { id: 82, arabic: "الْعَفُوُّ", rumi: "Al-'Afuw", meaning: "Maha Pemaaf" },
+            { id: 83, arabic: "الرَّءُوفُ", rumi: "Ar-Ra'uf", meaning: "Maha Pengasih" },
+            { id: 84, arabic: "مَالِكُ الْمُلْكِ", rumi: "Malik-ul-Mulk", meaning: "Penguasa Kerajaan (Alam)" },
+            { id: 85, arabic: "ذُو الْجَلَالِ وَالْإِكْرَامِ", rumi: "Dzul-Jalal-Wal-Ikram", meaning: "Pemilik Kebesaran & Kemuliaan" },
+            { id: 86, arabic: "الْمُقْسِطُ", rumi: "Al-Muqsit", meaning: "Maha Mengadili" },
+            { id: 87, arabic: "الْجَامِعُ", rumi: "Al-Jami'", meaning: "Maha Mengumpulkan" },
+            { id: 88, arabic: "الْغَنِيُّ", rumi: "Al-Ghaniy", meaning: "Maha Kaya" },
+            { id: 89, arabic: "الْمُغْنِي", rumi: "Al-Mughni", meaning: "Maha Memberi Kekayaan" },
+            { id: 90, arabic: "الْمَانِعُ", rumi: "Al-Mani'", meaning: "Maha Mencegah / Menolak" },
+            { id: 91, arabic: "الضَّارُّ", rumi: "Ad-Darr", meaning: "Maha Pemberi Kemudaratan" },
+            { id: 92, arabic: "النَّافِعُ", rumi: "An-Nafi'", meaning: "Maha Pemberi Manfaat" },
+            { id: 93, arabic: "النُّورُ", rumi: "An-Nur", meaning: "Maha Bercahaya (Menerangi)" },
+            { id: 94, arabic: "الْهَادِي", rumi: "Al-Hadi", meaning: "Maha Pemberi Petunjuk" },
+            { id: 95, arabic: "الْبَدِيعُ", rumi: "Al-Badi'", meaning: "Maha Pencipta (Tiada Bandingan)" },
+            { id: 96, arabic: "الْبَاقِي", rumi: "Al-Baqi", meaning: "Maha Kekal" },
+            { id: 97, arabic: "الْوَارِثُ", rumi: "Al-Warith", meaning: "Maha Mewarisi segalanya" },
+            { id: 98, arabic: "الرَّشِيدُ", rumi: "Ar-Rashid", meaning: "Maha Pandai / Bijaksana" },
+            { id: 99, arabic: "الصَّبُورُ", rumi: "As-Sabur", meaning: "Maha Penyabar" }
+        ];
+
+        // State variables
+        let currentIndex = 0;
+
+        // DOM Elements
+        const arabicText = document.getElementById('arabicText');
+        const rumiText = document.getElementById('rumiText');
+        const meaningText = document.getElementById('meaningText');
+        const counter = document.getElementById('counter');
+        const cardNumberBg = document.getElementById('cardNumberBg');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideContainer = document.getElementById('slideContainer');
+
+        // Initialize App
+        function init() {
+            // Load saved progress from localStorage if it exists
+            const savedIndex = localStorage.getItem('asmaulHusnaIndex');
+            if (savedIndex !== null) {
+                currentIndex = parseInt(savedIndex);
+            }
+            updateCard();
+        }
+
+        // Update the card UI based on currentIndex
+        function updateCard(direction = 'none') {
+            const data = asmaulHusna[currentIndex];
+            
+            // Animation handling
+            if (direction === 'next') {
+                slideContainer.classList.add('fade-out-left');
+            } else if (direction === 'prev') {
+                slideContainer.classList.add('fade-out-right');
+            }
+
+            setTimeout(() => {
+                populateData();
+
+                function populateData() {
+                    arabicText.textContent = data.arabic;
+                    rumiText.textContent = data.rumi;
+                    meaningText.textContent = data.meaning;
+                    counter.textContent = data.id;
+                    cardNumberBg.textContent = data.id;
+
+                    // Update button states
+                    prevBtn.disabled = currentIndex === 0;
+                    nextBtn.disabled = currentIndex === asmaulHusna.length - 1;
+
+                    // Save progress
+                    localStorage.setItem('asmaulHusnaIndex', currentIndex);
+
+                    // Remove animation classes to fade back in
+                    slideContainer.classList.remove('fade-out-left', 'fade-out-right');
+                }
+            }, direction !== 'none' ? 200 : 0);
+        }
+
+        // Next button handler
+        function nextName() {
+            if (currentIndex < asmaulHusna.length - 1) {
+                currentIndex++;
+                updateCard('next');
+            }
+        }
+
+        // Prev button handler
+        function prevName() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard('prev');
+            }
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if(confirm("Adakah anda pasti mahu mula dari awal (Nama 1)?")) {
+                currentIndex = 0;
+                updateCard('prev');
+            }
+        }
+
+        // --- Audio Functionality ---
+        let currentAudio = null;
+
+        // Pastikan senarai suara dimuatkan (untuk sesetengah pelayar web)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function playCurrentNameAudio() {
+            // Hentikan audio sebelumnya jika sedang dimainkan
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            const data = asmaulHusna[currentIndex];
+            
+            // --- FUNGSI WAKAF TAJWID ---
+            // Cari tulisan Arab, buang baris di huruf terakhir (Damma/Fatha/Kasra) 
+            // dan gantikan dengan tanda Sukun (Mati). 
+            // Ini akan memaksa sistem komputer mematuhi hukum Wakaf.
+            let textToRead = data.arabic.replace(/[\u064E\u064F\u0650]$/, '\u0652');
+            textToRead += " ."; // Titik di hujung untuk paksa suara berhenti (pause)
+            
+            let useLocalTTS = false;
+            
+            // Menggunakan Web Speech API untuk suara tempatan
+            if ('speechSynthesis' in window) {
+                const voices = window.speechSynthesis.getVoices();
+                // Cari suara Bahasa Arab (ar)
+                const arabicVoices = voices.filter(v => v.lang.startsWith('ar'));
+                
+                if (arabicVoices.length > 0) {
+                    useLocalTTS = true;
+                    window.speechSynthesis.cancel(); // Hentikan suara yang sedang bercakap
+                    
+                    const utterance = new SpeechSynthesisUtterance(textToRead);
+                    utterance.lang = 'ar-SA';
+                    utterance.rate = 0.8;  // Perlahan sedikit supaya tajwid jelas
+                    utterance.pitch = 0.6; // Rendahkan nada supaya bunyi garau (lelaki)
+
+                    // Cuba cari profil suara lelaki (jika wujud dalam peranti)
+                    const maleVoice = arabicVoices.find(v => v.name.toLowerCase().includes('male'));
+                    
+                    if (maleVoice) {
+                        utterance.voice = maleVoice;
+                    } else {
+                        utterance.voice = arabicVoices[0];
+                    }
+
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            // Jika peranti TIADA suara Arab, automatik guna Audio Awan (Cloud Arab)
+            if (!useLocalTTS) {
+                // Gunakan tl=ar untuk Bahasa Arab
+                const audioUrl = `https://translate.googleapis.com/translate_tts?client=tw-ob&ie=UTF-8&tl=ar&q=${encodeURIComponent(textToRead)}`;
+                
+                currentAudio = new Audio(audioUrl);
+                // Rendahkan kelajuan Cloud TTS (0.8) supaya nadanya lebih berat/garau 
+                // menyamai lelaki dan rentak bacaannya tertib
+                currentAudio.playbackRate = 0.8; 
+                
+                currentAudio.play().catch(error => {
+                    console.error("Ralat memainkan audio:", error);
+                    const btn = document.querySelector('button[title="Dengar Sebutan"]');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = `<span class="text-xs font-bold text-red-300">Ralat 🔇</span>`;
+                    setTimeout(() => btn.innerHTML = originalHtml, 2000);
+                });
+            }
+        }
+
+        // --- Touch Swipe Functionality for Mobile ---
+        let touchstartX = 0;
+        let touchendX = 0;
+        let touchstartY = 0;
+        let touchendY = 0;
+
+        function handleGesture() {
+            // Check if horizontal swipe is larger than vertical (to prevent scrolling conflict)
+            if (Math.abs(touchendX - touchstartX) > Math.abs(touchendY - touchstartY)) {
+                if (touchendX < touchstartX - 50) {
+                    // Swiped Left -> Next
+                    nextName();
+                }
+                if (touchendX > touchstartX + 50) {
+                    // Swiped Right -> Prev
+                    prevName();
+                }
+            }
+        }
+
+        slideContainer.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+        });
+
+        slideContainer.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            touchendY = e.changedTouches[0].screenY;
+            handleGesture();
+        });
+
+        // --- Keyboard Navigation ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextName();
+            } else if (e.key === 'ArrowLeft') {
+                prevName();
+            }
+        });
+
+        // Run initialization
+        init();
+    </script>
+</body>
+</html>
