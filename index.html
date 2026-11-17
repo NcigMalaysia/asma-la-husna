@@ -99,6 +99,19 @@
                 <p class="text-2xl md:text-3xl font-medium text-teal-100 text-center z-10" id="meaningText">
                     Maha Pemurah
                 </p>
+
+                <!-- Butang Penerangan -->
+                <button onclick="togglePenerangan()" id="btnPenerangan" class="mt-5 z-10 text-sm bg-teal-800/60 hover:bg-teal-700 text-teal-100 px-4 py-2 rounded-full transition-all border border-teal-500/40 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Baca Dalil / Penerangan
+                </button>
+
+                <!-- Kotak Penerangan (Disembunyikan pada asalnya) -->
+                <div id="peneranganBox" class="hidden mt-4 z-10 p-4 bg-slate-900/60 rounded-xl border border-teal-600/30 text-teal-50 text-sm md:text-base text-center w-full max-w-sm backdrop-blur-md shadow-inner transition-all">
+                    <p id="peneranganText" class="leading-relaxed"></p>
+                </div>
             </div>
         </div>
 
@@ -131,116 +144,119 @@
     </div>
 
     <script>
-        // Database of 99 Names of Allah
+        // Database of 99 Names of Allah with explanations and references
         const asmaulHusna = [
-            { id: 1, arabic: "الرَّحْمَنُ", rumi: "Ar-Rahman", meaning: "Maha Pemurah" },
-            { id: 2, arabic: "الرَّحِيمُ", rumi: "Ar-Rahim", meaning: "Maha Penyayang" },
-            { id: 3, arabic: "الْمَلِكُ", rumi: "Al-Malik", meaning: "Maha Merajai / Menguasai" },
-            { id: 4, arabic: "الْقُدُّوسُ", rumi: "Al-Quddus", meaning: "Maha Suci" },
-            { id: 5, arabic: "السَّلَامُ", rumi: "As-Salam", meaning: "Maha Penyelamat / Sejahtera" },
-            { id: 6, arabic: "الْمُؤْمِنُ", rumi: "Al-Mu'min", meaning: "Maha Melimpahkan Keamanan" },
-            { id: 7, arabic: "الْمُهَيْمِنُ", rumi: "Al-Muhaymin", meaning: "Maha Pengawal / Penjaga" },
-            { id: 8, arabic: "الْعَزِيزُ", rumi: "Al-Aziz", meaning: "Maha Berkuasa" },
-            { id: 9, arabic: "الْجَبَّارُ", rumi: "Al-Jabbar", meaning: "Maha Kuat / Perkasa" },
-            { id: 10, arabic: "الْمُتَكَبِّرُ", rumi: "Al-Mutakabbir", meaning: "Maha Megah" },
-            { id: 11, arabic: "الْخَالِقُ", rumi: "Al-Khaliq", meaning: "Maha Pencipta" },
-            { id: 12, arabic: "الْبَارِئُ", rumi: "Al-Bari'", meaning: "Maha Menjadikan" },
-            { id: 13, arabic: "الْمُصَوِّرُ", rumi: "Al-Musawwir", meaning: "Maha Membentuk Rupa" },
-            { id: 14, arabic: "الْغَفَّارُ", rumi: "Al-Ghaffar", meaning: "Maha Pengampun" },
-            { id: 15, arabic: "الْقَهَّارُ", rumi: "Al-Qahhar", meaning: "Maha Menundukkan Segala-galanya" },
-            { id: 16, arabic: "الْوَهَّابُ", rumi: "Al-Wahhab", meaning: "Maha Pemberi Kurnia" },
-            { id: 17, arabic: "الرَّزَّاقُ", rumi: "Ar-Razzaq", meaning: "Maha Pemberi Rezeki" },
-            { id: 18, arabic: "الْفَتَّاحُ", rumi: "Al-Fattah", meaning: "Maha Pembuka Rahmat" },
-            { id: 19, arabic: "الْعَلِيمُ", rumi: "Al-Alim", meaning: "Maha Mengetahui" },
-            { id: 20, arabic: "الْقَابِضُ", rumi: "Al-Qabidz", meaning: "Maha Pengekang" },
-            { id: 21, arabic: "الْبَاسِطُ", rumi: "Al-Basit", meaning: "Maha Melapangkan" },
-            { id: 22, arabic: "الْخَافِضُ", rumi: "Al-Khafidz", meaning: "Maha Merendahkan (Darjat)" },
-            { id: 23, arabic: "الرَّافِعُ", rumi: "Ar-Rafi'", meaning: "Maha Meninggikan (Darjat)" },
-            { id: 24, arabic: "الْمُعِزُّ", rumi: "Al-Mu'izz", meaning: "Maha Memuliakan" },
-            { id: 25, arabic: "الْمُذِلِّ", rumi: "Al-Muzill", meaning: "Maha Menghinakan" },
-            { id: 26, arabic: "السَّمِيعُ", rumi: "As-Sami'", meaning: "Maha Mendengar" },
-            { id: 27, arabic: "الْبَصِيرُ", rumi: "Al-Basir", meaning: "Maha Melihat" },
-            { id: 28, arabic: "الْحَكَمُ", rumi: "Al-Hakam", meaning: "Maha Menetapkan Hukum" },
-            { id: 29, arabic: "الْعَدْلُ", rumi: "Al-'Adl", meaning: "Maha Adil" },
-            { id: 30, arabic: "اللَّطِيفُ", rumi: "Al-Latif", meaning: "Maha Lembut / Halus" },
-            { id: 31, arabic: "الْخَبِيرُ", rumi: "Al-Khabir", meaning: "Maha Waspada / Mengetahui" },
-            { id: 32, arabic: "الْحَلِيمُ", rumi: "Al-Halim", meaning: "Maha Penyabar" },
-            { id: 33, arabic: "الْعَظِيمُ", rumi: "Al-'Azim", meaning: "Maha Agung" },
-            { id: 34, arabic: "الْغَفُورُ", rumi: "Al-Ghafur", meaning: "Maha Pengampun" },
-            { id: 35, arabic: "الشَّكُورُ", rumi: "Ash-Shakur", meaning: "Maha Menghargai / Mensyukuri" },
-            { id: 36, arabic: "الْعَلِيُّ", rumi: "Al-'Aliy", meaning: "Maha Tinggi" },
-            { id: 37, arabic: "الْكَبِيرُ", rumi: "Al-Kabir", meaning: "Maha Besar" },
-            { id: 38, arabic: "الْحَفِيظُ", rumi: "Al-Hafidz", meaning: "Maha Memelihara" },
-            { id: 39, arabic: "الْمُقِيتُ", rumi: "Al-Muqit", meaning: "Maha Menjaga / Memberi Keperluan" },
-            { id: 40, arabic: "الْحَسِيبُ", rumi: "Al-Hasib", meaning: "Maha Menghitung" },
-            { id: 41, arabic: "الْجَلِيلُ", rumi: "Al-Jalil", meaning: "Maha Luhur" },
-            { id: 42, arabic: "الْكَرِيمُ", rumi: "Al-Karim", meaning: "Maha Pemurah / Mulia" },
-            { id: 43, arabic: "الرَّقِيبُ", rumi: "Ar-Raqib", meaning: "Maha Mengawasi" },
-            { id: 44, arabic: "الْمُجِيبُ", rumi: "Al-Mujib", meaning: "Maha Mengabulkan" },
-            { id: 45, arabic: "الْوَاسِعُ", rumi: "Al-Wasi'", meaning: "Maha Luas (Ilmu & Rahmat)" },
-            { id: 46, arabic: "الْحَكِيمُ", rumi: "Al-Hakim", meaning: "Maha Bijaksana" },
-            { id: 47, arabic: "الْوَدُودُ", rumi: "Al-Wadud", meaning: "Maha Pencinta" },
-            { id: 48, arabic: "الْمَجِيدُ", rumi: "Al-Majid", meaning: "Maha Mulia" },
-            { id: 49, arabic: "الْبَاعِثُ", rumi: "Al-Ba'ith", meaning: "Maha Membangkitkan" },
-            { id: 50, arabic: "الشَّهِيدُ", rumi: "Ash-Shahid", meaning: "Maha Menyaksikan" },
-            { id: 51, arabic: "الْحَقُّ", rumi: "Al-Haqq", meaning: "Maha Benar" },
-            { id: 52, arabic: "الْوَكِيلُ", rumi: "Al-Wakil", meaning: "Maha Memelihara Penyerahan" },
-            { id: 53, arabic: "الْقَوِيُّ", rumi: "Al-Qawiy", meaning: "Maha Kuat" },
-            { id: 54, arabic: "الْمَتِينُ", rumi: "Al-Matin", meaning: "Maha Teguh" },
-            { id: 55, arabic: "الْوَلِيُّ", rumi: "Al-Waliy", meaning: "Maha Melindungi" },
-            { id: 56, arabic: "الْحَمِيدُ", rumi: "Al-Hamid", meaning: "Maha Terpuji" },
-            { id: 57, arabic: "الْمُحْصِي", rumi: "Al-Muhsi", meaning: "Maha Penghitung Segala Sesuatu" },
-            { id: 58, arabic: "الْمُبْدِئُ", rumi: "Al-Mubdi'", meaning: "Maha Memulai" },
-            { id: 59, arabic: "الْمُعِيدُ", rumi: "Al-Mu'id", meaning: "Maha Mengembalikan Kehidupan" },
-            { id: 60, arabic: "الْمُحْيِي", rumi: "Al-Muhyi", meaning: "Maha Menghidupkan" },
-            { id: 61, arabic: "اَلْمُمِيتُ", rumi: "Al-Mumit", meaning: "Maha Mematikan" },
-            { id: 62, arabic: "الْحَيُّ", rumi: "Al-Hayy", meaning: "Maha Hidup" },
-            { id: 63, arabic: "الْقَيُّومُ", rumi: "Al-Qayyum", meaning: "Maha Berdiri Sendiri" },
-            { id: 64, arabic: "الْوَاجِدُ", rumi: "Al-Wajid", meaning: "Maha Penemu" },
-            { id: 65, arabic: "الْمَاجِدُ", rumi: "Al-Majid", meaning: "Maha Mulia" },
-            { id: 66, arabic: "الْوَاحِدُ", rumi: "Al-Wahid", meaning: "Maha Esa" },
-            { id: 67, arabic: "الْأَحَدُ", rumi: "Al-Ahad", meaning: "Maha Satu" },
-            { id: 68, arabic: "الصَّمَدُ", rumi: "As-Samad", meaning: "Maha Diperlukan / Tempat Bergantung" },
-            { id: 69, arabic: "الْقَادِرُ", rumi: "Al-Qadir", meaning: "Maha Menentukan / Berkuasa" },
-            { id: 70, arabic: "الْمُقْتَدِرُ", rumi: "Al-Muqtadir", meaning: "Maha Berkuasa" },
-            { id: 71, arabic: "الْمُقَدِّمُ", rumi: "Al-Muqaddim", meaning: "Maha Mendahulukan" },
-            { id: 72, arabic: "الْمُؤَخِّرُ", rumi: "Al-Mu'akhkhir", meaning: "Maha Mengakhirkan" },
-            { id: 73, arabic: "الْأَوَّلُ", rumi: "Al-Awwal", meaning: "Maha Awal" },
-            { id: 74, arabic: "الْآخِرُ", rumi: "Al-Akhir", meaning: "Maha Akhir" },
-            { id: 75, arabic: "الظَّاهِرُ", rumi: "Az-Zahir", meaning: "Maha Nyata" },
-            { id: 76, arabic: "الْبَاطِنُ", rumi: "Al-Batin", meaning: "Maha Tersembunyi" },
-            { id: 77, arabic: "الْوَالِي", rumi: "Al-Wali", meaning: "Maha Memerintah" },
-            { id: 78, arabic: "الْمُتَعَالِي", rumi: "Al-Muta'ali", meaning: "Maha Tinggi & Agung" },
-            { id: 79, arabic: "الْبَرُّ", rumi: "Al-Barr", meaning: "Maha Penderma / Baik" },
-            { id: 80, arabic: "التَّوَّابُ", rumi: "At-Tawwab", meaning: "Maha Penerima Taubat" },
-            { id: 81, arabic: "الْمُنْتَقِمُ", rumi: "Al-Muntaqim", meaning: "Maha Penyiksa / Penuntut Balas" },
-            { id: 82, arabic: "الْعَفُوُّ", rumi: "Al-'Afuw", meaning: "Maha Pemaaf" },
-            { id: 83, arabic: "الرَّءُوفُ", rumi: "Ar-Ra'uf", meaning: "Maha Pengasih" },
-            { id: 84, arabic: "مَالِكُ الْمُلْكِ", rumi: "Malik-ul-Mulk", meaning: "Penguasa Kerajaan (Alam)" },
-            { id: 85, arabic: "ذُو الْجَلَالِ وَالْإِكْرَامِ", rumi: "Dzul-Jalal-Wal-Ikram", meaning: "Pemilik Kebesaran & Kemuliaan" },
-            { id: 86, arabic: "الْمُقْسِطُ", rumi: "Al-Muqsit", meaning: "Maha Mengadili" },
-            { id: 87, arabic: "الْجَامِعُ", rumi: "Al-Jami'", meaning: "Maha Mengumpulkan" },
-            { id: 88, arabic: "الْغَنِيُّ", rumi: "Al-Ghaniy", meaning: "Maha Kaya" },
-            { id: 89, arabic: "الْمُغْنِي", rumi: "Al-Mughni", meaning: "Maha Memberi Kekayaan" },
-            { id: 90, arabic: "الْمَانِعُ", rumi: "Al-Mani'", meaning: "Maha Mencegah / Menolak" },
-            { id: 91, arabic: "الضَّارُّ", rumi: "Ad-Darr", meaning: "Maha Pemberi Kemudaratan" },
-            { id: 92, arabic: "النَّافِعُ", rumi: "An-Nafi'", meaning: "Maha Pemberi Manfaat" },
-            { id: 93, arabic: "النُّورُ", rumi: "An-Nur", meaning: "Maha Bercahaya (Menerangi)" },
-            { id: 94, arabic: "الْهَادِي", rumi: "Al-Hadi", meaning: "Maha Pemberi Petunjuk" },
-            { id: 95, arabic: "الْبَدِيعُ", rumi: "Al-Badi'", meaning: "Maha Pencipta (Tiada Bandingan)" },
-            { id: 96, arabic: "الْبَاقِي", rumi: "Al-Baqi", meaning: "Maha Kekal" },
-            { id: 97, arabic: "الْوَارِثُ", rumi: "Al-Warith", meaning: "Maha Mewarisi segalanya" },
-            { id: 98, arabic: "الرَّشِيدُ", rumi: "Ar-Rashid", meaning: "Maha Pandai / Bijaksana" },
-            { id: 99, arabic: "الصَّبُورُ", rumi: "As-Sabur", meaning: "Maha Penyabar" }
+            { id: 1, arabic: "الرَّحْمَنُ", rumi: "Ar-Rahman", meaning: "Maha Pemurah", penerangan: "Rahmat-Nya meliputi segala sesuatu di dunia ini untuk semua makhluk. (Rujukan: Surah Al-Fatihah 1:3)" },
+            { id: 2, arabic: "الرَّحِيمُ", rumi: "Ar-Rahim", meaning: "Maha Penyayang", penerangan: "Penyayang khusus kepada hamba-hambaNya yang beriman di akhirat kelak. (Rujukan: Surah Al-Ahzab 33:43)" },
+            { id: 3, arabic: "الْمَلِكُ", rumi: "Al-Malik", meaning: "Maha Merajai / Menguasai", penerangan: "Penguasa mutlak dan Raja bagi seluruh alam semesta. (Rujukan: Surah Ta Ha 20:114)" },
+            { id: 4, arabic: "الْقُدُّوسُ", rumi: "Al-Quddus", meaning: "Maha Suci", penerangan: "Suci dari segala sifat kekurangan dan kelemahan makhluk. (Rujukan: Surah Al-Jumu'ah 62:1)" },
+            { id: 5, arabic: "السَّلَامُ", rumi: "As-Salam", meaning: "Maha Penyelamat / Sejahtera", penerangan: "Pemberi kesejahteraan dan keselamatan dari sebarang aib. (Rujukan: Surah Al-Hashr 59:23)" },
+            { id: 6, arabic: "الْمُؤْمِنُ", rumi: "Al-Mu'min", meaning: "Maha Melimpahkan Keamanan", penerangan: "Pemberi rasa aman kepada hambaNya yang beriman. (Rujukan: Surah Al-Hashr 59:23)" },
+            { id: 7, arabic: "الْمُهَيْمِنُ", rumi: "Al-Muhaymin", meaning: "Maha Pengawal / Penjaga", penerangan: "Mengawasi, menyaksikan dan memelihara segala urusan hambaNya. (Rujukan: Surah Al-Hashr 59:23)" },
+            { id: 8, arabic: "الْعَزِيزُ", rumi: "Al-Aziz", meaning: "Maha Berkuasa", penerangan: "Maha Perkasa, kehendakNya sentiasa menang dan tiada yang dapat mengalahkanNya. (Rujukan: Surah Ali 'Imran 3:62)" },
+            { id: 9, arabic: "الْجَبَّارُ", rumi: "Al-Jabbar", meaning: "Maha Kuat / Perkasa", penerangan: "KehendakNya wajib terlaksana ke atas semua makhluk tanpa halangan. (Rujukan: Surah Al-Hashr 59:23)" },
+            { id: 10, arabic: "الْمُتَكَبِّرُ", rumi: "Al-Mutakabbir", meaning: "Maha Megah", penerangan: "Pemilik mutlak segala kebesaran, keagungan dan kemegahan. (Rujukan: Surah Al-Hashr 59:23)" },
+            { id: 11, arabic: "الْخَالِقُ", rumi: "Al-Khaliq", meaning: "Maha Pencipta", penerangan: "Pencipta segala sesuatu dari tiada kepada ada mengikut kehendakNya. (Rujukan: Surah Al-Hashr 59:24)" },
+            { id: 12, arabic: "الْبَارِئُ", rumi: "Al-Bari'", meaning: "Maha Menjadikan", penerangan: "Yang mewujudkan ciptaan dari pelan/ketetapan kepada bentuk yang nyata. (Rujukan: Surah Al-Hashr 59:24)" },
+            { id: 13, arabic: "الْمُصَوِّرُ", rumi: "Al-Musawwir", meaning: "Maha Membentuk Rupa", penerangan: "Membentuk dan mengukir rupa makhluk dengan pelbagai bentuk yang unik. (Rujukan: Surah Al-Hashr 59:24)" },
+            { id: 14, arabic: "الْغَفَّارُ", rumi: "Al-Ghaffar", meaning: "Maha Pengampun", penerangan: "Sangat banyak mengampuni dosa dan menutup aib hambaNya berulang kali. (Rujukan: Surah Taha 20:82)" },
+            { id: 15, arabic: "الْقَهَّارُ", rumi: "Al-Qahhar", meaning: "Maha Menundukkan Segala-galanya", penerangan: "Menundukkan segala sesuatu dengan kekuasaanNya yang tidak tertanding. (Rujukan: Surah Ar-Ra'd 13:16)" },
+            { id: 16, arabic: "الْوَهَّابُ", rumi: "Al-Wahhab", meaning: "Maha Pemberi Kurnia", penerangan: "Sentiasa melimpahkan pemberian dan kurnia tanpa meminta sebarang balasan. (Rujukan: Surah Ali 'Imran 3:8)" },
+            { id: 17, arabic: "الرَّزَّاقُ", rumi: "Ar-Razzaq", meaning: "Maha Pemberi Rezeki", penerangan: "Menciptakan rezeki dan menyampaikannya kepada semua makhluk yang memerlukannya. (Rujukan: Surah Adz-Dzariyat 51:58)" },
+            { id: 18, arabic: "الْفَتَّاحُ", rumi: "Al-Fattah", meaning: "Maha Pembuka Rahmat", penerangan: "Membuka pintu-pintu rahmat, rezeki, dan jalan penyelesaian bagi hambaNya. (Rujukan: Surah Saba' 34:26)" },
+            { id: 19, arabic: "الْعَلِيمُ", rumi: "Al-Alim", meaning: "Maha Mengetahui", penerangan: "Mengetahui secara sempurna segala sesuatu, yang zahir mahupun yang tersembunyi. (Rujukan: Surah Al-Baqarah 2:115)" },
+            { id: 20, arabic: "الْقَابِضُ", rumi: "Al-Qabidz", meaning: "Maha Pengekang", penerangan: "Menahan atau menyempitkan rezeki dan kehidupan mengikut hikmahNya. (Rujukan: Surah Al-Baqarah 2:245)" },
+            { id: 21, arabic: "الْبَاسِطُ", rumi: "Al-Basit", meaning: "Maha Melapangkan", penerangan: "Meluaskan rezeki dan kebaikan kepada sesiapa yang dikehendakiNya. (Rujukan: Surah Ar-Ra'd 13:26)" },
+            { id: 22, arabic: "الْخَافِضُ", rumi: "Al-Khafidz", meaning: "Maha Merendahkan (Darjat)", penerangan: "Merendahkan darjat golongan yang angkuh, ingkar dan zalim. (Berdasarkan perbuatan Allah dalam nas syarak)" },
+            { id: 23, arabic: "الرَّافِعُ", rumi: "Ar-Rafi'", meaning: "Maha Meninggikan (Darjat)", penerangan: "Meninggikan darjat hamba-hambaNya yang beriman dan berilmu. (Rujukan: Surah Al-Mujadilah 58:11)" },
+            { id: 24, arabic: "الْمُعِزُّ", rumi: "Al-Mu'izz", meaning: "Maha Memuliakan", penerangan: "Memberi kemuliaan dan kehebatan kepada sesiapa yang dikehendakiNya. (Rujukan: Surah Ali 'Imran 3:26)" },
+            { id: 25, arabic: "الْمُذِلِّ", rumi: "Al-Muzill", meaning: "Maha Menghinakan", penerangan: "Menghinakan dan merendahkan martabat orang yang melawan kebenaran. (Rujukan: Surah Ali 'Imran 3:26)" },
+            { id: 26, arabic: "السَّمِيعُ", rumi: "As-Sami'", meaning: "Maha Mendengar", penerangan: "Mendengar segala-galanya, sama ada diucapkan secara kuat atau berbisik di dalam hati. (Rujukan: Surah Asy-Syura 42:11)" },
+            { id: 27, arabic: "الْبَصِيرُ", rumi: "Al-Basir", meaning: "Maha Melihat", penerangan: "Melihat segala yang nyata dan tersembunyi dengan penglihatan yang sempurna. (Rujukan: Surah Al-Hujurat 49:18)" },
+            { id: 28, arabic: "الْحَكَمُ", rumi: "Al-Hakam", meaning: "Maha Menetapkan Hukum", penerangan: "Hakim mutlak yang meletakkan ketetapan hukum tanpa kezaliman sedikitpun. (Rujukan: Surah Al-An'am 6:114)" },
+            { id: 29, arabic: "الْعَدْلُ", rumi: "Al-'Adl", meaning: "Maha Adil", penerangan: "KeadilanNya mutlak, langsung tidak pernah menzalimi hambaNya. (Rujukan: Surah An-Nisa 4:40)" },
+            { id: 30, arabic: "اللَّطِيفُ", rumi: "Al-Latif", meaning: "Maha Lembut / Halus", penerangan: "Sangat halus urusanNya dan menyantuni hambaNya tanpa mereka sedari. (Rujukan: Surah Al-Mulk 67:14)" },
+            { id: 31, arabic: "الْخَبِيرُ", rumi: "Al-Khabir", meaning: "Maha Waspada / Mengetahui", penerangan: "Maha Mengetahui sesuatu secara mendalam dan terperinci hingga ke akar umbi. (Rujukan: Surah Al-An'am 6:103)" },
+            { id: 32, arabic: "الْحَلِيمُ", rumi: "Al-Halim", meaning: "Maha Penyabar", penerangan: "Sangat bersabar, tidak tergesa-gesa menghukum hambaNya yang berdosa agar mereka bertaubat. (Rujukan: Surah Al-Baqarah 2:225)" },
+            { id: 33, arabic: "الْعَظِيمُ", rumi: "Al-'Azim", meaning: "Maha Agung", penerangan: "KeagunganNya tidak dapat dibayangkan oleh akal fikiran makhlukNya. (Rujukan: Surah Al-Baqarah 2:255 - Ayatul Kursi)" },
+            { id: 34, arabic: "الْغَفُورُ", rumi: "Al-Ghafur", meaning: "Maha Pengampun", penerangan: "Banyak memberi ampun dan memaafkan segala dosa betapapun besarnya. (Rujukan: Surah Az-Zumar 39:53)" },
+            { id: 35, arabic: "الشَّكُورُ", rumi: "Ash-Shakur", meaning: "Maha Menghargai / Mensyukuri", penerangan: "Sangat menghargai amalan kebaikan hamba walau sedikit dan melipatgandakan pahalanya. (Rujukan: Surah Fatir 35:30)" },
+            { id: 36, arabic: "الْعَلِيُّ", rumi: "Al-'Aliy", meaning: "Maha Tinggi", penerangan: "Maha Tinggi darjat dan kedudukanNya dari segala sifat makhluk. (Rujukan: Surah Al-Baqarah 2:255)" },
+            { id: 37, arabic: "الْكَبِيرُ", rumi: "Al-Kabir", meaning: "Maha Besar", penerangan: "KebesaranNya mengatasi segala yang wujud; tiada yang lebih besar daripadaNya. (Rujukan: Surah Ar-Ra'd 13:9)" },
+            { id: 38, arabic: "الْحَفِيظُ", rumi: "Al-Hafidz", meaning: "Maha Memelihara", penerangan: "Memelihara segala makhlukNya dan menjaga amalan hamba daripada hilang. (Rujukan: Surah Hud 11:57)" },
+            { id: 39, arabic: "الْمُقِيتُ", rumi: "Al-Muqit", meaning: "Maha Menjaga / Memberi Keperluan", penerangan: "Menjamin dan menyediakan rezeki serta makanan bagi setiap makhluk yang bernyawa. (Rujukan: Surah An-Nisa 4:85)" },
+            { id: 40, arabic: "الْحَسِيبُ", rumi: "Al-Hasib", meaning: "Maha Menghitung", penerangan: "Maha Mencukupi bagi hambaNya dan Maha Menghitung amal perbuatan manusia kelak. (Rujukan: Surah An-Nisa 4:86)" },
+            { id: 41, arabic: "الْجَلِيلُ", rumi: "Al-Jalil", meaning: "Maha Luhur", penerangan: "Mempunyai sifat-sifat kebesaran, kemuliaan, dan keluhuran yang mutlak. (Berasaskan sifat Keagungan Allah)" },
+            { id: 42, arabic: "الْكَرِيمُ", rumi: "Al-Karim", meaning: "Maha Pemurah / Mulia", penerangan: "Teramat Pemurah, memberi kurnia walau tidak diminta dan mengampunkan saat hamba bersalah. (Rujukan: Surah Al-Infitar 82:6)" },
+            { id: 43, arabic: "الرَّقِيبُ", rumi: "Ar-Raqib", meaning: "Maha Mengawasi", penerangan: "Sentiasa memantau dan mengawasi setiap gerak-geri, perbuatan, dan bisikan hambaNya. (Rujukan: Surah An-Nisa 4:1)" },
+            { id: 44, arabic: "الْمُجِيبُ", rumi: "Al-Mujib", meaning: "Maha Mengabulkan", penerangan: "Mendengar dan memperkenankan doa hamba yang meminta kepadaNya. (Rujukan: Surah Hud 11:61)" },
+            { id: 45, arabic: "الْوَاسِعُ", rumi: "Al-Wasi'", meaning: "Maha Luas", penerangan: "Ilmu, rezeki, rahmat, dan keampunanNya sangat luas meliputi segalanya. (Rujukan: Surah Al-Baqarah 2:268)" },
+            { id: 46, arabic: "الْحَكِيمُ", rumi: "Al-Hakim", meaning: "Maha Bijaksana", penerangan: "Setiap ciptaan, perintah, dan takdirNya diletakkan pada hikmah dan kebaikan yang tepat. (Rujukan: Surah At-Tin 95:8)" },
+            { id: 47, arabic: "الْوَدُودُ", rumi: "Al-Wadud", meaning: "Maha Pencinta", penerangan: "Sangat mencintai hamba-hambaNya yang beriman dan bertaubat. (Rujukan: Surah Hud 11:90)" },
+            { id: 48, arabic: "الْمَجِيدُ", rumi: "Al-Majid", meaning: "Maha Mulia", penerangan: "Zat yang sempurna kemuliaanNya dan banyak kebaikanNya. (Rujukan: Surah Hud 11:73)" },
+            { id: 49, arabic: "الْبَاعِثُ", rumi: "Al-Ba'ith", meaning: "Maha Membangkitkan", penerangan: "Yang akan membangkitkan dan menghidupkan semula makhluk dari kubur pada Hari Kiamat. (Rujukan: Surah Al-Hajj 22:7)" },
+            { id: 50, arabic: "الشَّهِيدُ", rumi: "Ash-Shahid", meaning: "Maha Menyaksikan", penerangan: "Tidak ada suatu pun yang tersembunyi dari kesaksian dan pemerhatianNya. (Rujukan: Surah Al-Ma'idah 5:117)" },
+            { id: 51, arabic: "الْحَقُّ", rumi: "Al-Haqq", meaning: "Maha Benar", penerangan: "Kewujudan, janji, dan agamaNya adalah suatu kebenaran yang tidak dapat disangkal. (Rujukan: Surah Taha 20:114)" },
+            { id: 52, arabic: "الْوَكِيلُ", rumi: "Al-Wakil", meaning: "Maha Memelihara Penyerahan", penerangan: "Sebaik-baik tempat berserah dan tempat bergantung segala urusan makhluk. (Rujukan: Surah Ali 'Imran 3:173)" },
+            { id: 53, arabic: "الْقَوِيُّ", rumi: "Al-Qawiy", meaning: "Maha Kuat", penerangan: "KekuatanNya sempurna, tidak sesekali mengalami sebarang keletihan atau kelemahan. (Rujukan: Surah Al-Anfal 8:52)" },
+            { id: 54, arabic: "الْمَتِينُ", rumi: "Al-Matin", meaning: "Maha Teguh", penerangan: "Kekuasaan dan kekuatanNya amat teguh serta tidak dapat digugat sama sekali. (Rujukan: Surah Adz-Dzariyat 51:58)" },
+            { id: 55, arabic: "الْوَلِيُّ", rumi: "Al-Waliy", meaning: "Maha Melindungi", penerangan: "Penolong, pelindung, dan pengurus kepada orang-orang yang beriman. (Rujukan: Surah Al-Baqarah 2:257)" },
+            { id: 56, arabic: "الْحَمِيدُ", rumi: "Al-Hamid", meaning: "Maha Terpuji", penerangan: "Zat yang paling layak dan berhak menerima segala pujian dalam setiap keadaan. (Rujukan: Surah Ibrahim 14:1)" },
+            { id: 57, arabic: "الْمُحْصِي", rumi: "Al-Muhsi", meaning: "Maha Penghitung", penerangan: "Mengetahui dengan terperinci jumlah dan setiap pergerakan sekecil-kecil makhlukNya. (Rujukan: Surah Maryam 19:94)" },
+            { id: 58, arabic: "الْمُبْدِئُ", rumi: "Al-Mubdi'", meaning: "Maha Memulai", penerangan: "Memulakan dan mewujudkan seluruh penciptaan alam ini dari asalnya yang tiada. (Rujukan: Surah Al-Buruj 85:13)" },
+            { id: 59, arabic: "الْمُعِيدُ", rumi: "Al-Mu'id", meaning: "Maha Mengembalikan", penerangan: "Mengembalikan yang hidup kepada mati, dan membangkitkan semula kepada hidup di akhirat. (Rujukan: Surah Ar-Rum 30:27)" },
+            { id: 60, arabic: "الْمُحْيِي", rumi: "Al-Muhyi", meaning: "Maha Menghidupkan", penerangan: "Pemberi nyawa kepada segala sesuatu yang wujud sama ada manusia, haiwan atau tumbuhan. (Rujukan: Surah Fussilat 41:39)" },
+            { id: 61, arabic: "اَلْمُمِيتُ", rumi: "Al-Mumit", meaning: "Maha Mematikan", penerangan: "Yang mencabut nyawa dan menamatkan tempoh hayat setiap makhluk. (Rujukan: Surah Al-Hijr 15:23)" },
+            { id: 62, arabic: "الْحَيُّ", rumi: "Al-Hayy", meaning: "Maha Hidup", penerangan: "Maha Hidup secara sempurna, kekal dan abadi, tanpa permulaan dan pengakhiran. (Rujukan: Surah Al-Baqarah 2:255)" },
+            { id: 63, arabic: "الْقَيُّومُ", rumi: "Al-Qayyum", meaning: "Maha Berdiri Sendiri", penerangan: "Zat yang mentadbir urusan alam sentiasa dan tidak bergantung kepada sesiapa. (Rujukan: Surah Al-Baqarah 2:255)" },
+            { id: 64, arabic: "الْوَاجِدُ", rumi: "Al-Wajid", meaning: "Maha Penemu", penerangan: "Bebas dari sebarang keperluan, apa sahaja yang dikehendakiNya pasti akan ditemukanNya. (Berdasarkan sifat kaya Allah)" },
+            { id: 65, arabic: "الْمَاجِدُ", rumi: "Al-Majid", meaning: "Maha Mulia", penerangan: "Zat yang sangat luhur, mulia, serta sempurna pada kurniaanNya yang melimpah ruah. (Rujukan: Surah Al-Buruj 85:15)" },
+            { id: 66, arabic: "الْوَاحِدُ", rumi: "Al-Wahid", meaning: "Maha Esa", penerangan: "Tunggal dari segi sifat dan perbuatan, tiada sekutu atau tandingan bagiNya. (Rujukan: Surah Al-Baqarah 2:163)" },
+            { id: 67, arabic: "الْأَحَدُ", rumi: "Al-Ahad", meaning: "Maha Satu", penerangan: "Satu-satunya Tuhan yang berhak disembah, tidak beranak dan tidak diperanakkan. (Rujukan: Surah Al-Ikhlas 112:1)" },
+            { id: 68, arabic: "الصَّمَدُ", rumi: "As-Samad", meaning: "Tempat Bergantung", penerangan: "Hanya kepadaNya sahaja seluruh makhluk memohon dan bergantung harap memenuhi hajat. (Rujukan: Surah Al-Ikhlas 112:2)" },
+            { id: 69, arabic: "الْقَادِرُ", rumi: "Al-Qadir", meaning: "Maha Berkuasa", penerangan: "Mempunyai kuasa untuk melakukan atau tidak melakukan sesuatu menurut iradatNya. (Rujukan: Surah Yasin 36:81)" },
+            { id: 70, arabic: "الْمُقْتَدِرُ", rumi: "Al-Muqtadir", meaning: "Maha Menentukan", penerangan: "Kekuasaan yang berkesan dalam menentukan ukuran dan masa bagi segala perkara. (Rujukan: Surah Al-Kahf 18:45)" },
+            { id: 71, arabic: "الْمُقَدِّمُ", rumi: "Al-Muqaddim", meaning: "Maha Mendahulukan", penerangan: "Mendahulukan apa sahaja yang dikehendaki (rezeki, ajal, hidayah) mengikut hikmahNya. (Rujukan: Hadis Sahih)" },
+            { id: 72, arabic: "الْمُؤَخِّرُ", rumi: "Al-Mu'akhkhir", meaning: "Maha Mengakhirkan", penerangan: "Menangguhkan, mengakhirkan atau membelakangkan sesuatu pada waktu yang paling sesuai. (Rujukan: Hadis Sahih)" },
+            { id: 73, arabic: "الْأَوَّلُ", rumi: "Al-Awwal", meaning: "Maha Awal", penerangan: "Telah wujud sejak azali sebelum wujudnya sesuatu apa pun (Tiada permulaan). (Rujukan: Surah Al-Hadid 57:3)" },
+            { id: 74, arabic: "الْآخِرُ", rumi: "Al-Akhir", meaning: "Maha Akhir", penerangan: "Kekal wujud setelah segalanya musnah dan binasa (Tiada pengakhiran). (Rujukan: Surah Al-Hadid 57:3)" },
+            { id: 75, arabic: "الظَّاهِرُ", rumi: "Az-Zahir", meaning: "Maha Nyata", penerangan: "KewujudanNya amat nyata dan jelas terbukti menerusi penciptaan alam semesta ini. (Rujukan: Surah Al-Hadid 57:3)" },
+            { id: 76, arabic: "الْبَاطِنُ", rumi: "Al-Batin", meaning: "Maha Tersembunyi", penerangan: "ZatNya tersembunyi dari jangkauan pandangan pancaindera makhluk di dunia. (Rujukan: Surah Al-Hadid 57:3)" },
+            { id: 77, arabic: "الْوَالِي", rumi: "Al-Wali", meaning: "Maha Memerintah", penerangan: "Menguasai, mentadbir dan memiliki hak ke atas segala urusan pengurusan alam. (Rujukan: Surah Ar-Ra'd 13:11)" },
+            { id: 78, arabic: "الْمُتَعَالِي", rumi: "Al-Muta'ali", meaning: "Maha Tinggi & Agung", penerangan: "Maha Suci dan bersih dari sebarang sifat kemanusiaan atau ciri-ciri kekurangan makhluk. (Rujukan: Surah Ar-Ra'd 13:9)" },
+            { id: 79, arabic: "الْبَرُّ", rumi: "Al-Barr", meaning: "Maha Penderma / Baik", penerangan: "Sumber segala kebaikan, sentiasa melimpahkan ihsan dan kebaikan kepada hambaNya. (Rujukan: Surah At-Tur 52:28)" },
+            { id: 80, arabic: "التَّوَّابُ", rumi: "At-Tawwab", meaning: "Maha Penerima Taubat", penerangan: "Membuka pintu taubat seluas-luasnya dan menerima orang yang kembali kepadaNya. (Rujukan: Surah An-Nasr 110:3)" },
+            { id: 81, arabic: "الْمُنْتَقِمُ", rumi: "Al-Muntaqim", meaning: "Maha Penyiksa", penerangan: "Menghukum penderhaka yang melampaui batas setelah diberi pelbagai peringatan. (Rujukan: Surah As-Sajdah 32:22)" },
+            { id: 82, arabic: "الْعَفُوُّ", rumi: "Al-'Afuw", meaning: "Maha Pemaaf", penerangan: "Menghapuskan dan memadamkan dosa hamba seolah-olah ia tidak pernah dilakukan. (Rujukan: Surah An-Nisa 4:149)" },
+            { id: 83, arabic: "الرَّءُوفُ", rumi: "Ar-Ra'uf", meaning: "Maha Pengasih", penerangan: "Sifat belas kasihan dan kasih sayang yang amat tinggi, meringankan beban hambaNya. (Rujukan: Surah At-Tawbah 9:128)" },
+            { id: 84, arabic: "مَالِكُ الْمُلْكِ", rumi: "Malik-ul-Mulk", meaning: "Penguasa Kerajaan (Alam)", penerangan: "Pemilik mutlak segala kerajaan alam semesta; Dia memberi kerajaan kepada sesiapa yang dikehendaki. (Rujukan: Surah Ali 'Imran 3:26)" },
+            { id: 85, arabic: "ذُو الْجَلَالِ وَالْإِكْرَامِ", rumi: "Dzul-Jalal-Wal-Ikram", meaning: "Pemilik Kebesaran & Kemuliaan", penerangan: "Zat yang layak diagungkan (Jalal) dan mengurniakan nikmat (Ikram) tidak terhingga. (Rujukan: Surah Ar-Rahman 55:27)" },
+            { id: 86, arabic: "الْمُقْسِطُ", rumi: "Al-Muqsit", meaning: "Maha Mengadili", penerangan: "Mengadili dan memberikan hak kepada hambaNya secara adil tanpa berat sebelah. (Rujukan: Surah Al-Hujurat 49:9)" },
+            { id: 87, arabic: "الْجَامِعُ", rumi: "Al-Jami'", meaning: "Maha Mengumpulkan", penerangan: "Menyatukan yang berbeza dan mengumpulkan manusia kelak pada Hari Penghakiman. (Rujukan: Surah Ali 'Imran 3:9)" },
+            { id: 88, arabic: "الْغَنِيُّ", rumi: "Al-Ghaniy", meaning: "Maha Kaya", penerangan: "Kaya dengan sendirinya, bebas sama sekali dari memerlukan bantuan sesiapa pun. (Rujukan: Surah Luqman 31:26)" },
+            { id: 89, arabic: "الْمُغْنِي", rumi: "Al-Mughni", meaning: "Maha Memberi Kekayaan", penerangan: "Menganugerahkan harta, kecukupan, dan ketenangan jiwa kepada makhlukNya. (Rujukan: Surah An-Najm 53:48)" },
+            { id: 90, arabic: "الْمَانِعُ", rumi: "Al-Mani'", meaning: "Maha Mencegah", penerangan: "Menghalang anasir buruk dan membela hambaNya yang soleh dari sebarang bahaya/mudarat. (Berdasarkan sifat pemeliharaanNya)" },
+            { id: 91, arabic: "الضَّارُّ", rumi: "Ad-Darr", meaning: "Maha Pemberi Kemudaratan", penerangan: "Berhak mendatangkan ujian atau mudarat atas kehendakNya sebagai hikmah pengajaran. (Rujukan: Surah Al-An'am 6:17)" },
+            { id: 92, arabic: "النَّافِعُ", rumi: "An-Nafi'", meaning: "Maha Pemberi Manfaat", penerangan: "Sumber segala manfaat dan kebaikan yang dikecap oleh makhluk di alam semesta. (Rujukan: Surah Al-An'am 6:17)" },
+            { id: 93, arabic: "النُّورُ", rumi: "An-Nur", meaning: "Maha Bercahaya (Menerangi)", penerangan: "Menerangi hati yang gelap dengan hidayah dan pencipta cahaya di langit dan bumi. (Rujukan: Surah An-Nur 24:35)" },
+            { id: 94, arabic: "الْهَادِي", rumi: "Al-Hadi", meaning: "Maha Pemberi Petunjuk", penerangan: "Memberikan panduan akal, fitrah dan agama supaya hambaNya menemui kebenaran. (Rujukan: Surah Al-Furqan 25:31)" },
+            { id: 95, arabic: "الْبَدِيعُ", rumi: "Al-Badi'", meaning: "Maha Pencipta", penerangan: "Pencipta yang mereka bentuk alam ini tanpa ada sebarang rujukan atau contoh sebelumnya. (Rujukan: Surah Al-Baqarah 2:117)" },
+            { id: 96, arabic: "الْبَاقِي", rumi: "Al-Baqi", meaning: "Maha Kekal", penerangan: "Maha Kekal selama-lamanya meskipun seluruh ciptaan di alam ini hancur binasa. (Rujukan: Surah Ar-Rahman 55:27)" },
+            { id: 97, arabic: "الْوَارِثُ", rumi: "Al-Warith", meaning: "Maha Mewarisi", penerangan: "Kekal hidup mewarisi segala isi bumi dan langit setelah makhluk dimatikan. (Rujukan: Surah Al-Hijr 15:23)" },
+            { id: 98, arabic: "الرَّشِيدُ", rumi: "Ar-Rashid", meaning: "Maha Pandai / Bijaksana", penerangan: "Mengatur dan mentadbir urusan makhlukNya ke jalan yang lurus tanpa sebarang kesilapan. (Rujukan: Surah Al-Kahf 18:17)" },
+            { id: 99, arabic: "الصَّبُورُ", rumi: "As-Sabur", meaning: "Maha Penyabar", penerangan: "Maha penyabar dalam memberi tangguh hukuman kepada yang berdosa agar mereka kembali bertaubat. (Berdasarkan sifat Sabar Tuhan)" }
         ];
 
         // State variables
         let currentIndex = 0;
+        let peneranganOpen = false;
 
         // DOM Elements
         const arabicText = document.getElementById('arabicText');
         const rumiText = document.getElementById('rumiText');
         const meaningText = document.getElementById('meaningText');
+        const peneranganBox = document.getElementById('peneranganBox');
+        const peneranganText = document.getElementById('peneranganText');
         const counter = document.getElementById('counter');
         const cardNumberBg = document.getElementById('cardNumberBg');
         const prevBtn = document.getElementById('prevBtn');
@@ -275,8 +291,13 @@
                     arabicText.textContent = data.arabic;
                     rumiText.textContent = data.rumi;
                     meaningText.textContent = data.meaning;
+                    if (peneranganText) peneranganText.textContent = data.penerangan;
                     counter.textContent = data.id;
                     cardNumberBg.textContent = data.id;
+
+                    // Tutup kotak penerangan apabila bertukar kad
+                    peneranganOpen = false;
+                    if(peneranganBox) peneranganBox.classList.add('hidden');
 
                     // Update button states
                     prevBtn.disabled = currentIndex === 0;
@@ -312,6 +333,16 @@
             if(confirm("Adakah anda pasti mahu mula dari awal (Nama 1)?")) {
                 currentIndex = 0;
                 updateCard('prev');
+            }
+        }
+
+        // --- Toggle Penerangan ---
+        function togglePenerangan() {
+            peneranganOpen = !peneranganOpen;
+            if (peneranganOpen) {
+                peneranganBox.classList.remove('hidden');
+            } else {
+                peneranganBox.classList.add('hidden');
             }
         }
 
