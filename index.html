@@ -2,37 +2,60 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Hafalan 99 Nama Allah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
+        html, body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a; /* Slate 900 */
             color: #f8fafc;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: contain;
         }
         .arabic-font {
             font-family: 'Amiri', serif;
         }
+
+        /* Safe area support for modern smartphones */
+        .safe-top {
+            padding-top: max(0.75rem, env(safe-area-inset-top));
+        }
+        .safe-bottom {
+            padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
+        }
         
         /* Slide Transitions */
         .slide-container {
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            touch-action: pan-y;
+            user-select: none;
+        }
+        .slide-container.dragging {
+            transition: none;
         }
         .fade-out-left {
             opacity: 0;
-            transform: translateX(-50px);
+            transform: translateX(-60px) scale(0.97);
         }
         .fade-out-right {
             opacity: 0;
-            transform: translateX(50px);
+            transform: translateX(60px) scale(0.97);
+        }
+
+        /* Mobile Bottom Sheet Animation */
+        .sheet-panel {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* Custom Scrollbar for list */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #1e293b; 
@@ -43,258 +66,194 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-teal-500/30">
+<body class="min-h-[100dvh] flex flex-col items-center justify-between selection:bg-teal-500/30">
 
-    <main class="w-full max-w-xl flex flex-col items-center z-10">
-        <!-- Header -->
-        <header class="text-center mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-emerald-200 tracking-tight">
-                Hafalan Asmaul Husna
-            </h1>
-            <p class="text-slate-400 text-xs sm:text-sm mt-1">99 Nama Allah, Maksud, Dalil &amp; Amalan Zikir</p>
-        </header>
-
-        <!-- Top Controls (Counter Selector & Reset) -->
-        <div class="w-full flex justify-between items-center mb-6 px-2 gap-3">
-            <div class="flex items-center gap-2 text-teal-200 font-semibold bg-teal-900/60 px-3 py-1.5 rounded-full border border-teal-700/60 shadow-sm">
-                <select id="nameSelector" onchange="jumpToName(this.value)" aria-label="Pilih Nama Allah" class="bg-transparent text-teal-100 font-semibold text-sm md:text-base focus:outline-none cursor-pointer pr-1 max-w-[190px] sm:max-w-[240px] truncate">
-                </select>
-                <span class="text-teal-400/80 text-sm border-l border-teal-700/70 pl-2 shrink-0">/ 99</span>
+    <!-- Top Mobile App Bar -->
+    <header class="w-full max-w-md mx-auto px-4 safe-top pb-2 z-20 shrink-0">
+        <div class="flex items-center justify-between gap-2 mb-2.5">
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-emerald-200 tracking-tight leading-tight">
+                    Asmaul Husna
+                </h1>
+                <p class="text-slate-400 text-[11px] sm:text-xs">Hafalan 99 Nama Allah</p>
             </div>
-            <button onclick="openResetModal()" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1 shrink-0 p-2 rounded-lg hover:bg-slate-800/60">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button onclick="openResetModal()" class="text-xs text-slate-300 hover:text-white active:scale-95 transition-all flex items-center gap-1.5 shrink-0 px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700/70" aria-label="Mula Semula">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                Mula Semula
+                <span>Mula Semula</span>
             </button>
         </div>
 
+        <!-- Selector & Progress Bar -->
+        <div class="flex items-center justify-between gap-2 bg-slate-800/70 px-3 py-2 rounded-2xl border border-slate-700/70 backdrop-blur-md">
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                <select id="nameSelector" onchange="jumpToName(this.value)" aria-label="Pilih Nama Allah" class="bg-transparent text-teal-100 font-semibold text-sm focus:outline-none cursor-pointer w-full truncate">
+                </select>
+            </div>
+            <span class="text-xs font-bold text-teal-300 bg-teal-950/80 px-2.5 py-1 rounded-full border border-teal-700/60 shrink-0" id="counterBadge">1 / 99</span>
+        </div>
+
+        <!-- Visual Progress Track -->
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-2.5">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full transition-all duration-300" style="width: 1%;"></div>
+        </div>
+    </header>
+
+    <!-- Main Mobile Card Area -->
+    <main class="w-full max-w-md mx-auto px-4 py-2 flex-1 flex flex-col justify-center z-10">
         <!-- The Card -->
-        <div class="w-full min-h-[420px] md:min-h-[460px] mb-8 slide-container relative" id="slideContainer">
-            <div class="w-full min-h-[420px] md:min-h-[460px] bg-gradient-to-br from-teal-800 to-emerald-900 rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center shadow-2xl border border-teal-600/30 relative overflow-hidden">
+        <div class="w-full slide-container relative" id="slideContainer">
+            <div class="w-full min-h-[380px] sm:min-h-[430px] bg-gradient-to-br from-teal-800 via-teal-900 to-emerald-950 rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center shadow-2xl border border-teal-500/30 relative overflow-hidden">
                 
-                <!-- Audio Button -->
-                <button id="btnNameAudio" onclick="playCurrentNameAudio()" class="absolute top-4 right-4 md:top-6 md:right-6 text-teal-200 hover:text-white bg-teal-900/60 hover:bg-teal-700 p-3 rounded-full transition-all z-20 shadow-md backdrop-blur-sm border border-teal-600/50" title="Dengar Sebutan Arab">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    </svg>
-                </button>
-
-                <!-- Background number -->
-                <div class="absolute -right-4 -bottom-10 text-teal-900/40 text-[10rem] md:text-[12rem] font-black z-0 leading-none pointer-events-none" id="cardNumberBg">1</div>
-
-                <h2 class="arabic-font text-6xl sm:text-7xl md:text-8xl text-white mb-5 mt-4 leading-tight text-center drop-shadow-lg z-10" id="arabicText">
-                    اَللّٰهُ
-                </h2>
-                
-                <div class="w-2/3 border-t border-teal-600/50 my-3 z-10"></div>
-                
-                <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-300 tracking-wide text-center mb-2 z-10" id="rumiText">
-                    Allah
-                </h3>
-                
-                <p class="text-xl sm:text-2xl md:text-3xl font-medium text-teal-100 text-center z-10" id="meaningText">
-                    Tuhan Yang Maha Esa
-                </p>
-
-                <!-- Butang Penerangan & Amalan -->
-                <div class="mt-6 z-10 flex flex-wrap items-center justify-center gap-2.5 w-full">
-                    <button onclick="toggleInfoPanel('penerangan')" id="btnPenerangan" class="text-xs sm:text-sm bg-teal-900/60 hover:bg-teal-700 text-teal-100 px-4 py-2.5 rounded-full transition-all border border-teal-500/40 flex items-center gap-2 shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                <!-- Top Card Row: Number Pill & Audio Button -->
+                <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
+                    <span class="text-xs font-semibold tracking-wider uppercase text-teal-200/90 bg-teal-950/60 px-3 py-1.5 rounded-full border border-teal-600/40 backdrop-blur-sm" id="cardNumberPill">
+                        Nama #1
+                    </span>
+                    <button id="btnNameAudio" onclick="playCurrentNameAudio()" class="text-teal-100 hover:text-white active:scale-95 bg-teal-950/70 hover:bg-teal-700 p-3 rounded-full transition-all shadow-lg backdrop-blur-sm border border-teal-500/50" title="Dengar Sebutan Arab" aria-label="Dengar Sebutan Arab">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                         </svg>
-                        Dalil / Penerangan
-                    </button>
-
-                    <button onclick="toggleInfoPanel('amalan')" id="btnAmalan" class="text-xs sm:text-sm bg-emerald-950/70 hover:bg-emerald-700 text-amber-200 px-4 py-2.5 rounded-full transition-all border border-amber-400/40 flex items-center gap-2 shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
-                        Amalan Zikir
                     </button>
                 </div>
 
-                <!-- Kotak Penerangan (Disembunyikan pada asalnya) -->
-                <div id="peneranganBox" class="hidden mt-4 z-10 p-4 bg-slate-900/70 rounded-2xl border border-teal-500/30 text-teal-50 text-sm md:text-base text-left w-full max-w-lg backdrop-blur-md shadow-inner transition-all">
-                    <div class="text-xs font-semibold uppercase tracking-wider text-teal-300 mb-1.5">Dalil &amp; Penerangan</div>
-                    <p id="peneranganText" class="leading-relaxed"></p>
+                <!-- Background Decorative Number -->
+                <div class="absolute -right-3 -bottom-8 text-teal-950/45 text-[9rem] sm:text-[11rem] font-black z-0 leading-none pointer-events-none" id="cardNumberBg">1</div>
+
+                <!-- Arabic, Rumi & Meaning -->
+                <div class="flex flex-col items-center justify-center w-full mt-10 mb-6 z-10">
+                    <h2 class="arabic-font text-6xl sm:text-7xl text-white mb-4 leading-tight text-center drop-shadow-lg px-2" id="arabicText">
+                        اَللّٰهُ
+                    </h2>
+                    
+                    <div class="w-1/2 border-t border-teal-500/40 my-2.5"></div>
+                    
+                    <h3 class="text-2xl sm:text-3xl font-bold text-yellow-300 tracking-wide text-center mb-1.5" id="rumiText">
+                        Ya Allah
+                    </h3>
+                    
+                    <p class="text-lg sm:text-xl font-medium text-teal-100 text-center leading-snug px-2" id="meaningText">
+                        Tuhan Yang Maha Esa
+                    </p>
+                </div>
+
+                <!-- Action Pills (Open Mobile Bottom Sheet) -->
+                <div class="w-full grid grid-cols-2 gap-2.5 z-10 mt-auto">
+                    <button onclick="toggleInfoPanel('penerangan')" id="btnPenerangan" class="text-xs sm:text-sm font-medium bg-teal-950/65 hover:bg-teal-800 active:scale-95 text-teal-100 px-3 py-3 rounded-2xl transition-all border border-teal-500/40 flex items-center justify-center gap-1.5 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span>Dalil &amp; Tafsir</span>
+                    </button>
+
+                    <button onclick="toggleInfoPanel('amalan')" id="btnAmalan" class="text-xs sm:text-sm font-medium bg-emerald-950/75 hover:bg-emerald-800 active:scale-95 text-amber-200 px-3 py-3 rounded-2xl transition-all border border-amber-400/40 flex items-center justify-center gap-1.5 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                        <span>Amalan Zikir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-slate-500 mt-3 text-xs text-center">
+            Leret kiri / kanan pada kad untuk tukar nama
+        </p>
+    </main>
+
+    <!-- Bottom Thumb-Friendly Navigation Dock -->
+    <nav class="w-full max-w-md mx-auto px-4 pt-2 safe-bottom z-20 shrink-0">
+        <div class="flex items-center gap-3 bg-slate-900/90 backdrop-blur-lg p-2 rounded-3xl border border-slate-800 shadow-2xl">
+            <button onclick="prevName()" id="prevBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-semibold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-1.5 border border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="text-sm sm:text-base">Sebelum</span>
+            </button>
+
+            <button onclick="playCurrentNameAudio()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-teal-300 p-3.5 rounded-2xl transition-all border border-teal-700/50 shrink-0" title="Sebut Nama" aria-label="Sebut Nama">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            </button>
+
+            <button onclick="nextName()" id="nextBtn" class="flex-1 bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-semibold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-teal-900/40 flex items-center justify-center gap-1.5 border border-teal-500 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="text-sm sm:text-base">Seterus</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Sheet for Dalil & Amalan Zikir -->
+    <div id="infoSheetOverlay" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 flex items-end justify-center" onclick="if (event.target === this) closeAllInfoPanels()">
+        <div id="infoSheet" class="sheet-panel translate-y-full w-full max-w-md bg-slate-900 border-t border-x border-slate-700/80 rounded-t-3xl p-5 safe-bottom shadow-2xl max-h-[80dvh] flex flex-col">
+            <!-- Drag Handle -->
+            <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-4 shrink-0"></div>
+
+            <!-- Sheet Header Tabs & Close -->
+            <div class="flex items-center justify-between gap-2 mb-4 shrink-0">
+                <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700/70 flex-1">
+                    <button id="tabPenerangan" onclick="toggleInfoPanel('penerangan')" class="flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300">
+                        Dalil &amp; Tafsir
+                    </button>
+                    <button id="tabAmalan" onclick="toggleInfoPanel('amalan')" class="flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300">
+                        Amalan Zikir
+                    </button>
+                </div>
+                <button onclick="closeAllInfoPanels()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors shrink-0" aria-label="Tutup">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scrollable Sheet Content -->
+            <div class="overflow-y-auto pr-1 flex-1">
+                <!-- Kotak Penerangan -->
+                <div id="peneranganBox" class="hidden text-teal-50 text-sm sm:text-base text-left">
+                    <div class="text-xs font-semibold uppercase tracking-wider text-teal-300 mb-2">Dalil &amp; Penerangan</div>
+                    <p id="peneranganText" class="leading-relaxed text-slate-200"></p>
                     <!-- Butang Audio Ayat Dalil oleh Syeikh Abdul Rahman Al-Sudais -->
-                    <div id="sudaisAudioContainer" class="hidden mt-3 pt-3 border-t border-teal-700/50 flex flex-wrap items-center justify-between gap-2">
-                        <button id="btnSudaisAyah" onclick="playSudaisAyahAudio()" class="text-xs sm:text-sm bg-emerald-700/80 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-xl transition-all border border-emerald-400/40 flex items-center gap-2 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div id="sudaisAudioContainer" class="hidden mt-4 pt-4 border-t border-slate-800 flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Bacaan Imam Masjidil Haram</span>
+                            <span id="sudaisRefBadge" class="text-xs text-teal-300 font-semibold bg-teal-950/80 px-2.5 py-0.5 rounded-full border border-teal-800"></span>
+                        </div>
+                        <button id="btnSudaisAyah" onclick="playSudaisAyahAudio()" class="w-full text-sm font-medium bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white px-4 py-3 rounded-2xl transition-all border border-emerald-500/40 flex items-center justify-center gap-2 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span id="sudaisBtnLabel">Dengar Ayat Dalil (Syeikh Al-Sudais)</span>
                         </button>
-                        <span id="sudaisRefBadge" class="text-xs text-teal-300/90 font-medium"></span>
                     </div>
                 </div>
 
-                <!-- Kotak Amalan Zikir (Disembunyikan pada asalnya) -->
-                <div id="amalanBox" class="hidden mt-4 z-10 p-4 bg-slate-900/75 rounded-2xl border border-amber-400/30 text-amber-50 text-sm md:text-base text-left w-full max-w-lg backdrop-blur-md shadow-inner transition-all max-h-60 overflow-y-auto">
-                    <div class="text-xs font-semibold uppercase tracking-wider text-amber-300 mb-1.5" id="amalanTitle">Amalan Zikir</div>
-                    <p id="amalanText" class="leading-relaxed whitespace-pre-line"></p>
+                <!-- Kotak Amalan Zikir -->
+                <div id="amalanBox" class="hidden text-amber-50 text-sm sm:text-base text-left">
+                    <div class="text-xs font-semibold uppercase tracking-wider text-amber-300 mb-2" id="amalanTitle">Amalan Zikir</div>
+                    <p id="amalanText" class="leading-relaxed whitespace-pre-line text-slate-200"></p>
                 </div>
             </div>
         </div>
-
-        <!-- Navigation Controls -->
-        <div class="flex items-center justify-between w-full max-w-sm gap-4">
-            <button onclick="prevName()" id="prevBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-semibold py-4 px-6 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 border border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Sebelum
-            </button>
-            <button onclick="nextName()" id="nextBtn" class="flex-1 bg-teal-600 hover:bg-teal-500 active:bg-teal-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-teal-900/50 flex items-center justify-center gap-2 border border-teal-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                Seterus
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
-
-        <p class="text-slate-500 mt-8 text-sm text-center px-4">
-            💡 Tips: Anda boleh meleret (swipe) kiri/kanan pada skrin atau guna kekunci anak panah untuk ke nama seterusnya.
-        </p>
-
-    </main>
+    </div>
 
     <!-- Custom Reset Confirmation Modal (Replacing confirm()) -->
-    <div id="resetModal" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
-            <h4 class="text-lg font-bold text-white mb-2">Mula Semula Hafalan?</h4>
-            <p class="text-slate-300 text-sm mb-6">Adakah anda pasti mahu kembali ke nama pertama (1. Allah)?</p>
-            <div class="flex gap-3">
-                <button onclick="closeResetModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium transition-colors">
-                    Batal
-                </button>
-                <button onclick="confirmResetProgress()" class="flex-1 py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors">
-                    Ya, Mula Semula
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Background Decorative Elements -->
-    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-900/30 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-900/20 rounded-full blur-3xl"></div>
-    </div>
-
-    <script>
-        // Database of 99 Names of Allah with full Arabic tashkeel (harakat), explanations, references, and amalan zikir
-        const asmaulHusna = [
-            { id: 1, arabic: "اَللّٰهُ", rumi: "Ya Allah", meaning: "Tuhan Yang Maha Esa", penerangan: "Nama yang paling agung (Ismul A'zam) yang menghimpunkan segala sifat kesempurnaan-Nya. (Rujukan: Surah Al-Ikhlas 112:1)", amalan: "Apabila dizikirkan 500 kali setiap malam, lebih-lebih lagi selepas solat tahajjud atau solat sunat 2 rakaat mempunyai pengaruh yang besar di dalam mencapai segala yang dihajati." },
-            { id: 2, arabic: "اَلرَّحْمٰنُ", rumi: "Ya Rahman", meaning: "Maha Pemurah", penerangan: "Rahmat-Nya meliputi segala sesuatu di dunia ini untuk semua makhluk. (Rujukan: Surah Al-Fatihah 1:3)", amalan: "Apabila dizikirkan sesudah solat 5 waktu sebanyak 500 kali, maka hati kita akan menjadi terang, tenang & sifat-sifat pelupa & gugup akan hilang dengan izin Allah." },
-            { id: 3, arabic: "اَلرَّحِيمُ", rumi: "Ya Rahim", meaning: "Maha Penyayang", penerangan: "Penyayang khusus kepada hamba-hambaNya yang beriman di akhirat kelak. (Rujukan: Surah Al-Ahzab 33:43)", amalan: "Apabila dizikirkan sebanyak 100 kali setiap hari, Insya Allah kita akan mempunyai daya penarik yang besar sekali hingga manusia merasa cinta & kasih serta sayang terhadap kita." },
-            { id: 4, arabic: "اَلْمَلِكُ", rumi: "Ya Malik", meaning: "Maha Merajai / Pemerintah", penerangan: "Penguasa mutlak dan Raja bagi seluruh alam semesta. (Rujukan: Surah Ta Ha 20:114)", amalan: "Apabila dizikirkan sebanyak 121 kali setiap pagi atau setelah tergelincirnya matahari, segala pekerjaan yang dilakukan setiap hari akan mendatangkan berkat & kekayaan yang diredhai Allah." },
-            { id: 5, arabic: "اَلْقُدُّوسُ", rumi: "Ya Quddus", meaning: "Maha Suci", penerangan: "Suci dari segala sifat kekurangan dan kelemahan makhluk. (Rujukan: Surah Al-Jumu'ah 62:1)", amalan: "Apabila dizikirkan sebanyak 100 kali setiap pagi setelah tergelincir matahari, maka hati kita akan terjaga dari semua penyakit hati seperti sombong, iri hati, dengki dan lain-lain." },
-            { id: 6, arabic: "اَلسَّلَامُ", rumi: "Ya Salam", meaning: "Maha Penyelamat", penerangan: "Pemberi kesejahteraan dan keselamatan dari sebarang aib. (Rujukan: Surah Al-Hashr 59:23)", amalan: "Apabila dizikirkan sebanyak 136 kali, Insya Allah jasmani & rohani kita akan terhindar dari segala penyakit sehingga badan menjadi segar sihat & sejahtera." },
-            { id: 7, arabic: "اَلْمُؤْمِنُ", rumi: "Ya Mukmin", meaning: "Maha Pengaman", penerangan: "Pemberi rasa aman kepada hambaNya yang beriman. (Rujukan: Surah Al-Hashr 59:23)", amalan: "Apabila dizikirkan sebanyak 236 kali, Insya Allah diri kita, keluarga & segala kekayaan yang dimiliki akan terpelihara & aman dari segala macam gangguan yang merosakkan." },
-            { id: 8, arabic: "اَلْمُهَيْمِنُ", rumi: "Ya Muhaimin", meaning: "Maha Pelindung / Penjaga", penerangan: "Mengawasi, menyaksikan dan memelihara segala urusan hambaNya. (Rujukan: Surah Al-Hashr 59:23)", amalan: "Apabila dizikirkan sebanyak 145 kali sesudah solat fardhu Isyak, Insya Allah fikiran & hati kita akan menjadi terang & bersih." },
-            { id: 9, arabic: "اَلْعَزِيزُ", rumi: "Ya 'Aziz", meaning: "Maha Mulia / Perkasa", penerangan: "Maha Perkasa, kehendakNya sentiasa menang dan tiada yang dapat mengalahkanNya. (Rujukan: Surah Ali 'Imran 3:62)", amalan: "Apabila dizikirkan sebanyak 40 kali sesudah solat subuh, Insya Allah, kita akan menjadi orang yang mulia, disegani orang kerana penuh kewibawaan." },
-            { id: 10, arabic: "اَلْجَبَّارُ", rumi: "Ya Jabbar", meaning: "Maha Pemaksa", penerangan: "KehendakNya wajib terlaksana ke atas semua makhluk tanpa halangan. (Rujukan: Surah Al-Hashr 59:23)", amalan: "Apabila dizikirkan sebanyak 226 kali pagi & petang, semua musuh akan menjadi tunduk & patuh dengan izin Allah." },
-            { id: 11, arabic: "اَلْمُتَكَبِّرُ", rumi: "Ya Mutakabbir", meaning: "Maha Besar / Megah", penerangan: "Pemilik mutlak segala kebesaran, keagungan dan kemegahan. (Rujukan: Surah Al-Hashr 59:23)", amalan: "Apabila dizikirkan sebanyak 662 kali, maka dengan kebijaksanaan bertindak, kita akan dapat menundukkan semua musuh, bahkan mereka akan menjadi pembantu yang setia." },
-            { id: 12, arabic: "اَلْخَالِقُ", rumi: "Ya Khaliq", meaning: "Maha Pencipta", penerangan: "Pencipta segala sesuatu dari tiada kepada ada mengikut kehendakNya. (Rujukan: Surah Al-Hashr 59:24)", amalan: "Dibaca mengikut kemampuan atau sebanyak 731 kali, Insya Allah yang ingin otak cerdas, cepat menerima sesuatu pelajaran, amalan ini akan memberikan otak kita cerdas dan cepat faham." },
-            { id: 13, arabic: "اَلْبَارِئُ", rumi: "Ya Baarii'", meaning: "Maha Perancang / Menjadikan", penerangan: "Yang mewujudkan ciptaan dari pelan/ketetapan kepada bentuk yang nyata. (Rujukan: Surah Al-Hashr 59:24)", amalan: "Sekiranya kita berada di dalam kesukaran atau sedang sakit, dibaca sebanyak 100 kali selama 7 hari berturut-turut, Insya Allah kita akan terlepas dari kesukaran & sembuh dari penyakit tersebut." },
-            { id: 14, arabic: "اَلْمُصَوِّرُ", rumi: "Ya Musawwir", meaning: "Maha Menjadikan Rupa Bentuk", penerangan: "Membentuk dan mengukir rupa makhluk dengan pelbagai bentuk yang unik. (Rujukan: Surah Al-Hashr 59:24)", amalan: "Sekiranya seorang isteri yang sudah lama belum mempunyai anak, maka cubalah ikhtiar ini dengan berpuasa selama 7 hari dari hari Ahad hingga Sabtu. Di waktu hendak berbuka puasa, ambil segelas air & dibacakan 'Ya Musawwir' sebanyak 21 kali, kemudian diminum air tersebut untuk berbuka puasa.\n\nBagi sang suami, hendaklah berbuat perkara yang sama tetapi hanya dengan berpuasa selama 3 hari. Kemudian pada waktu hendak berjimak, bacalah zikir ini sebanyak 10 kali, Insya Allah akan dikurniakan anak yang soleh." },
-            { id: 15, arabic: "اَلْغَفَّارُ", rumi: "Ya Ghaffar", meaning: "Maha Pengampun", penerangan: "Sangat banyak mengampuni dosa dan menutup aib hambaNya berulang kali. (Rujukan: Surah Taha 20:82)", amalan: "Sambil beriktikaf (diam dalam masjid dalam keadaan suci) bacalah zikir ini sebanyak 100 kali sambil menunggu masuknya waktu solat Jumaat, Insya Allah akan diampunkan dosa-dosa kita." },
-            { id: 16, arabic: "اَلْقَهَّارُ", rumi: "Ya Qahhaar", meaning: "Maha Menundukkan", penerangan: "Menundukkan segala sesuatu dengan kekuasaanNya yang tidak tertanding. (Rujukan: Surah Ar-Ra'd 13:16)", amalan: "Dizikir menurut kemampuan atau sebanyak 306 kali, maka hati kita akan dijaga dari ketamakkan & kemewahan dunia." },
-            { id: 17, arabic: "اَلْوَهَّابُ", rumi: "Ya Wahhab", meaning: "Maha Pemberi", penerangan: "Sentiasa melimpahkan pemberian dan kurnia tanpa meminta sebarang balasan. (Rujukan: Surah Ali 'Imran 3:8)", amalan: "Dizikir sebanyak 100 kali sesudah solat fardhu, barang siapa yang selalu di dalam kesempitan, Insya Allah segala kesulitan atau kesempitan dalam soal apa pun akan hilang." },
-            { id: 18, arabic: "اَلرَّزَّاقُ", rumi: "Ya Razzaq", meaning: "Maha Pemberi Rezeki", penerangan: "Menciptakan rezeki dan menyampaikannya kepada semua makhluk yang memerlukannya. (Rujukan: Surah Adz-Dzariyat 51:58)", amalan: "Dizikir mengikut kemampuan sesudah solat fardhu khususnya solat subuh, Insya Allah akan dipermudahkan rezeki yang halal dan membawa berkat. Rezeki akan datang tanpa diduga tetapi perlulah dilakukan dengan ikhtiar yang zahir." },
-            { id: 19, arabic: "اَلْفَتَّاحُ", rumi: "Ya Fattah", meaning: "Maha Pembuka", penerangan: "Membuka pintu-pintu rahmat, rezeki, dan jalan penyelesaian bagi hambaNya. (Rujukan: Surah Saba' 34:26)", amalan: "Dizikir sebanyak 71 kali sesudah selesai solat subuh, Insya Allah hati kita akan dibuka oleh Allah, sehingga mudah menerima nasihat agama." },
-            { id: 20, arabic: "اَلْعَلِيمُ", rumi: "Ya 'Alim", meaning: "Maha Mengetahui", penerangan: "Mengetahui secara sempurna segala sesuatu, yang zahir mahupun yang tersembunyi. (Rujukan: Surah Al-Baqarah 2:115)", amalan: "Dizikir sebanyak 100 kali setiap kali selesai solat Maktubah, Insya Allah akan mendapat kemakrifatan yang sempurna." },
-            { id: 21, arabic: "اَلْقَابِضُ", rumi: "Ya Qaabidhu", meaning: "Maha Penyempit Hidup", penerangan: "Menahan atau menyempitkan rezeki dan kehidupan mengikut hikmahNya. (Rujukan: Surah Al-Baqarah 2:245)", amalan: "Dizikirkan 100 kali setiap hari, maka dirinya akan semakin dekat dengan Allah dan terlepas dari segala bentuk ancaman." },
-            { id: 22, arabic: "اَلْبَاسِطُ", rumi: "Ya Baasithu", meaning: "Maha Pelapang Hidup", penerangan: "Meluaskan rezeki dan kebaikan kepada sesiapa yang dikehendakiNya. (Rujukan: Surah Ar-Ra'd 13:26)", amalan: "Bagi mereka yang berniaga atau mempunyai usaha-usaha lain, kuatkanlah usaha & berniaga itu dengan memperbanyakkan membaca zikir ini setiap hari, Insya Allah rezeki akan menjadi murah." },
-            { id: 23, arabic: "اَلْخَافِضُ", rumi: "Ya Khaa'fidh", meaning: "Maha Penghina / Merendahkan", penerangan: "Merendahkan darjat golongan yang angkuh, ingkar dan zalim. (Berdasarkan perbuatan Allah dalam nas syarak)", amalan: "Dizikirkan sebanyak 500 kali setiap hari, dalam keadaan suci, khusyuk & tawaduk, Insya Allah segala maksud akan ditunaikan Allah. Juga apabila mempunyai musuh, musuh itu akan jatuh martabatnya." },
-            { id: 24, arabic: "اَلرَّافِعُ", rumi: "Ya Raafi", meaning: "Maha Tinggi / Meninggikan", penerangan: "Meninggikan darjat hamba-hambaNya yang beriman dan berilmu. (Rujukan: Surah Al-Mujadilah 58:11)", amalan: "Dizikirkan setiap hari, baik siang atau malam sebanyak 70 kali, Insya Allah keselamatan harta benda di rumah, di kedai atau di tempat-tempat lain akan selamat dan terhindar dari kecurian." },
-            { id: 25, arabic: "اَلْمُعِزُّ", rumi: "Ya Mu'izz", meaning: "Maha Pemberi Kemuliaan / Kemenangan", penerangan: "Memberi kemuliaan dan kehebatan kepada sesiapa yang dikehendakiNya. (Rujukan: Surah Ali 'Imran 3:26)", amalan: "Dizikirkan sebanyak 140 kali setiap hari, Insya Allah akan memperolehi kewibawaan yang besar terutama ketua-ketua jabatan atau perniagaan." },
-            { id: 26, arabic: "اَلْمُذِلُّ", rumi: "Ya Muzill", meaning: "Maha Merendahkan", penerangan: "Menghinakan dan merendahkan martabat orang yang melawan kebenaran. (Rujukan: Surah Ali 'Imran 3:26)", amalan: "Perbanyakkanlah zikir ini setiap hari, sekiranya ada orang berhutang kepada kita dan sukar untuk memintanya, Insya Allah si penghutang akan sedar & membayar hutangnya kembali." },
-            { id: 27, arabic: "اَلسَّمِيعُ", rumi: "Ya Samii'", meaning: "Maha Mendengar", penerangan: "Mendengar segala-galanya, sama ada diucapkan secara kuat atau berbisik di dalam hati. (Rujukan: Surah Asy-Syura 42:11)", amalan: "Sekiranya inginkan doa kita makbul dan pendengaran telinga kita tajam, biasakanlah zikir ini setiap hari menurut kemampuan, lebih-lebih lagi sesudah solat Dhuha, Insya Allah doa akan mustajab." },
-            { id: 28, arabic: "اَلْبَصِيرُ", rumi: "Ya Bashiir", meaning: "Maha Melihat", penerangan: "Melihat segala yang nyata dan tersembunyi dengan penglihatan yang sempurna. (Rujukan: Surah Al-Hujurat 49:18)", amalan: "Dizikirkan sebanyak 100 kali sebelum solat Jumaat, Insya Allah akan menjadikan kita terang hati, cerdas otak dan selalu diberikan taufik & hidayah dari Allah." },
-            { id: 29, arabic: "اَلْحَكَمُ", rumi: "Ya Hakam", meaning: "Maha Menghukum", penerangan: "Hakim mutlak yang meletakkan ketetapan hukum tanpa kezaliman sedikitpun. (Rujukan: Surah Al-An'am 6:114)", amalan: "Dizikirkan sebanyak 68 kali pada tengah malam dalam keadaan suci, Insya Allah dapat membuka hati seseorang itu mudah menerima ilmu-ilmu agama dan membantu kecepatan mempelajari ilmu-ilmu agama." },
-            { id: 30, arabic: "اَلْعَدْلُ", rumi: "Ya Adllu", meaning: "Maha Adil", penerangan: "KeadilanNya mutlak, langsung tidak pernah menzalimi hambaNya. (Rujukan: Surah An-Nisa 4:40)", amalan: "Dizikirkan sebanyak 104 kali setiap hari sesudah selesai solat 5 waktu, Insya Allah diri kita selalu dapat berlaku adil." },
-            { id: 31, arabic: "اَللَّطِيفُ", rumi: "Ya Lathiif", meaning: "Maha Halus / Lembut", penerangan: "Sangat halus urusanNya dan menyantuni hambaNya tanpa mereka sedari. (Rujukan: Surah Al-Mulk 67:14)", amalan: "Dengan memperbanyakkan zikir ini mengikut kemampuan, Insya Allah bagi para peniaga, ikhtiar ini akan menjadikan barangan jualannya menjadi laris & maju." },
-            { id: 32, arabic: "اَلْخَبِيرُ", rumi: "Ya Khabiir", meaning: "Maha Waspada", penerangan: "Maha Mengetahui sesuatu secara mendalam dan terperinci hingga ke akar umbi. (Rujukan: Surah Al-An'am 6:103)", amalan: "Dengan memperbanyakkan zikir ini setiap hari, terkandung faedah yang teramat banyak sekali sesuai dengan maksud zikir ini antara lain faedahnya ialah dapat bertemu dengan teman atau anak yang telah terpisah sekian lama." },
-            { id: 33, arabic: "اَلْحَلِيمُ", rumi: "Ya Haliim", meaning: "Maha Penyantun", penerangan: "Sangat bersabar, tidak tergesa-gesa menghukum hambaNya yang berdosa agar mereka bertaubat. (Rujukan: Surah Al-Baqarah 2:225)", amalan: "Dizikirkan sebanyak 88 kali selepas solat lima waktu, bagi mereka yang mempunyai kedudukan di dalam pemerintahan, syarikat atau apa saja, Insya Allah dipastikan kedudukannya tidak akan dicabar atau diungkit-ungkit atau tergugat." },
-            { id: 34, arabic: "اَلْعَظِيمُ", rumi: "Ya 'Aziim", meaning: "Maha Agung", penerangan: "KeagunganNya tidak dapat dibayangkan oleh akal fikiran makhlukNya. (Rujukan: Surah Al-Baqarah 2:255 - Ayatul Kursi)", amalan: "Dizikirkan sebanyak 12 kali setiap hari untuk orang yang sekian lama menderitai sakit, Insya Allah akan sembuh. Juga apabila dibaca 12 kali kemudian ditiupkan pada tangan lalu diusap-usap pada seluruh badan, maka dengan izin Allah akan terhindar dari gangguan jin, syaitan dan sebagainya." },
-            { id: 35, arabic: "اَلْغَفُورُ", rumi: "Ya Ghafuur", meaning: "Maha Pengampun", penerangan: "Banyak memberi ampun dan memaafkan segala dosa betapapun besarnya. (Rujukan: Surah Az-Zumar 39:53)", amalan: "Bagi orang yang bertaubat, hendaklah memperbanyakkan zikir ini dengan mengakui dosa-dosa dan beriktikad untuk tidak mengulanginya, Insya Allah akan diterima taubatnya oleh Allah." },
-            { id: 36, arabic: "اَلشَّكُورُ", rumi: "Ya Syakuur", meaning: "Maha Menghargai / Mensyukuri", penerangan: "Sangat menghargai amalan kebaikan hamba walau sedikit dan melipatgandakan pahalanya. (Rujukan: Surah Fatir 35:30)", amalan: "Dizikirkan sebanyak 40 kali sehabis solat hajat, sebagai pengucapan terima kasih kepada Allah, Insya Allah semua hajat kita akan dimakbulkan Allah. Lakukanlah setiap kali kita mempunyai hajat yang penting & terdesak." },
-            { id: 37, arabic: "اَلْعَلِيُّ", rumi: "Ya 'Aliy", meaning: "Maha Tinggi Martabat-Nya", penerangan: "Maha Tinggi darjat dan kedudukanNya dari segala sifat makhluk. (Rujukan: Surah Al-Baqarah 2:255)", amalan: "Untuk mencerdaskan otak anak kita yang bebal, tulislah zikir ini sebanyak 110 kali (di dalam bahasa Arab) lalu direndam pada air yang dingin & diberikan si anak meminumnya, Insya Allah lama kelamaan otak si anak itu akan berubah cemerlang. Insya Allah mujarab." },
-            { id: 38, arabic: "اَلْكَبِيرُ", rumi: "Ya Kabiir", meaning: "Maha Besar", penerangan: "KebesaranNya mengatasi segala yang wujud; tiada yang lebih besar daripadaNya. (Rujukan: Surah Ar-Ra'd 13:9)", amalan: "Bagi seseorang yang kedudukannya telah dirampas atau dilucut gara-gara sesuatu fitnah, maka bacalah zikir ini sebanyak 1,000 kali selama 7 hari berturut-turut dalam keadaan suci sebagai pengaduan kepada Allah. Lakukanlah sesudah solat malam (tahajud atau hajat)." },
-            { id: 39, arabic: "اَلْحَفِيظُ", rumi: "Ya Hafiiz", meaning: "Maha Pelindung", penerangan: "Memelihara segala makhlukNya dan menjaga amalan hamba daripada hilang. (Rujukan: Surah Hud 11:57)", amalan: "Dizikir sebanyak 99 kali, Insya Allah diri kita akan terlindung dari gangguan binatang buas terutamanya apabila kita berada di dalam hutan." },
-            { id: 40, arabic: "اَلْمُقِيتُ", rumi: "Ya Muqiit", meaning: "Maha Pemberi Keperluan", penerangan: "Menjamin dan menyediakan rezeki serta makanan bagi setiap makhluk yang bernyawa. (Rujukan: Surah An-Nisa 4:85)", amalan: "Sekiranya kita berada di dalam kelaparan seperti ketika sesat di dalam hutan atau di mana sahaja sehingga sukar untuk mendapatkan bekalan makanan, maka perbanyakkan zikir ini. Insya Allah badan kita akan menjadi kuat & segar kerana rasa lapar akan hilang." },
-            { id: 41, arabic: "اَلْحَسِيبُ", rumi: "Ya Hasiib", meaning: "Maha Mencukupi", penerangan: "Maha Mencukupi bagi hambaNya dan Maha Menghitung amal perbuatan manusia kelak. (Rujukan: Surah An-Nisa 4:86)", amalan: "Untuk memperteguhkan kedudukan yang telah kita jawat, amalkan zikir ini sebanyak 777 kali sebelum matahari terbit & selepas solat Maghrib, Insya Allah akan meneguhkan kedudukan kita tanpa sebarang gangguan." },
-            { id: 42, arabic: "اَلْجَلِيلُ", rumi: "Ya Jaliil", meaning: "Maha Luhur", penerangan: "Mempunyai sifat-sifat kebesaran, kemuliaan, dan keluhuran yang mutlak. (Berasaskan sifat Keagungan Allah)", amalan: "Barangsiapa mengamalkan zikir ini pada sepertiga malam yang terakhir, Insya Allah kita akan mendapati perubahan yang mengkagumkan – perniagaan akan bertambah maju. Andai seorang pegawai, maka tanpa disedari kedudukan kita akan lebih tinggi dan terhormat & begitulah seterusnya dengan izin Allah." },
-            { id: 43, arabic: "اَلْكَرِيمُ", rumi: "Ya Kariim", meaning: "Maha Mulia", penerangan: "Teramat Pemurah, memberi kurnia walau tidak diminta dan mengampunkan saat hamba bersalah. (Rujukan: Surah Al-Infitar 82:6)", amalan: "Untuk mencapai darjat yang tinggi & mulia di dunia mahupun di akhirat kelak, maka amalkan zikir ini sebanyak 280 kali ketika hendak masuk tidur. Nescaya Allah akan mengangkat darjat mereka yang mengamalkan zikir ini." },
-            { id: 44, arabic: "اَلرَّقِيبُ", rumi: "Ya Raqiib", meaning: "Maha Pengawas", penerangan: "Sentiasa memantau dan mengawasi setiap gerak-geri, perbuatan, dan bisikan hambaNya. (Rujukan: Surah An-Nisa 4:1)", amalan: "Bagi meminta pertolongan kepada Allah terhadap penjagaan barang yang dikhuatirkan, maka zikirkan sebanyak 50 kali setiap hari dengan niat agar barang-barang yang dikhuatirkan yang berada di tempat yang jauh & sukar dijaga terhindar dari sebarang kecurian mahupun gangguan lainnya. Bertawakkal dan yakinlah kepada Allah. Insya Allah." },
-            { id: 45, arabic: "اَلْمُجِيبُ", rumi: "Ya Mujiib", meaning: "Maha Mengabulkan", penerangan: "Mendengar dan memperkenankan doa hamba yang meminta kepadaNya. (Rujukan: Surah Hud 11:61)", amalan: "Sesungguhnya Allah adalah Zat yang menerima doa hamba-Nya dan agar doa kita mustajab dan selalu diterima Allah, hendaklah mengamalkan zikir ini sebanyak 55 kali sesudah solat subuh. Insya Allah Tuhan akan mengabulkan doa kita." },
-            { id: 46, arabic: "اَلْوَاسِعُ", rumi: "Ya Waasi'", meaning: "Maha Luas Pemberian-Nya", penerangan: "Ilmu, rezeki, rahmat, dan keampunanNya sangat luas meliputi segalanya. (Rujukan: Surah Al-Baqarah 2:268)", amalan: "Apabila di dalam kesulitan maka amalkan zikir ini sebanyak 128 kali setiap pagi & petang, Insya Allah segala kesulitan akan hilang berkat pertolongan Allah. Andai zikir ini sentiasa diamalkan, Insya Allah Tuhan akan menjaga kita dari hasad dengki sesama makhluk." },
-            { id: 47, arabic: "اَلْحَكِيمُ", rumi: "Ya Hakiim", meaning: "Maha Bijaksana", penerangan: "Setiap ciptaan, perintah, dan takdirNya diletakkan pada hikmah dan kebaikan yang tepat. (Rujukan: Surah At-Tin 95:8)", amalan: "Bagi pelajar atau sesiapa sahaja yang memperbanyakkan zikir ini setiap hari, Insya Allah akalnya akan menjadi cerdas & lancar dalam menghafal & mengikuti pelajaran. Amalkanlah sekurang-kurangnya 300 kali setiap hari." },
-            { id: 48, arabic: "اَلْوَدُودُ", rumi: "Ya Waduud", meaning: "Maha Pencinta", penerangan: "Sangat mencintai hamba-hambaNya yang beriman dan bertaubat. (Rujukan: Surah Hud 11:90)", amalan: "Diamalkan zikir ini sebanyak 11,000 kali pada setiap malam. Insya Allah kita akan menjadi insan yang sentiasa bernasib baik, disayangi & rumahtangga kita akan sentiasa berada di dalam keadaan harmoni." },
-            { id: 49, arabic: "اَلْمَجِيدُ", rumi: "Ya Majiid", meaning: "Maha Mulia", penerangan: "Zat yang sempurna kemuliaanNya dan banyak kebaikanNya. (Rujukan: Surah Hud 11:73)", amalan: "Untuk ketenteraman keluarga di mana setiap anggota keluarga sentiasa menyayangi & menghormati & khasnya kita sebagai ketua keluarga, maka amalkan zikir ini sebanyak 99 kali, sesudah itu hembuskan kedua belah tapak tangan & usap ke seluruh muka. InsyaAllah semua anggota keluarga kita akan menyayangi & menghormati kita sebagai ketua keluarga." },
-            { id: 50, arabic: "اَلْبَاعِثُ", rumi: "Ya Baa'its", meaning: "Maha Membangkitkan", penerangan: "Yang akan membangkitkan dan menghidupkan semula makhluk dari kubur pada Hari Kiamat. (Rujukan: Surah Al-Hajj 22:7)", amalan: "Zikirkan sebanyak 100 kali dengan meletakkan kedua tangan ke dada, Insya Allah akan memberi kelapangan dada dengan ilmu & hikmah." },
-            { id: 51, arabic: "اَلشَّهِيدُ", rumi: "Ya Syahiid", meaning: "Maha Menyaksikan", penerangan: "Tidak ada suatu pun yang tersembunyi dari kesaksian dan pemerhatianNya. (Rujukan: Surah Al-Ma'idah 5:117)", amalan: "Apabila ada di kalangan anggota keluarga kita yang suka membangkang dan sebagainya, maka zikirkan sebanyak 319 kali secara berterusan setiap malam sehingga si pembangkang akan sedar & berubah perangainya." },
-            { id: 52, arabic: "اَلْحَقُّ", rumi: "Ya Haq", meaning: "Maha Benar", penerangan: "Kewujudan, janji, dan agamaNya adalah suatu kebenaran yang tidak dapat disangkal. (Rujukan: Surah Taha 20:114)", amalan: "Perbanyakkan zikir ini, Insya Allah ianya sangat berfaedah sekali untuk menebalkan iman & taat di dalam menjalankan perintah Allah." },
-            { id: 53, arabic: "اَلْوَكِيلُ", rumi: "Ya Wakiil", meaning: "Maha Berserah", penerangan: "Sebaik-baik tempat berserah dan tempat bergantung segala urusan makhluk. (Rujukan: Surah Ali 'Imran 3:173)", amalan: "Sekiranya terjadi hujan yang disertai ribut yang kuat, atau terjadi gempa, maka ketika itu perbanyakkan zikir ini, Insya Allah bencana tersebut akan menjadi reda & kembali seperti sediakala." },
-            { id: 54, arabic: "اَلْقَوِيُّ", rumi: "Ya Qawiy", meaning: "Maha Memiliki Kekuatan", penerangan: "KekuatanNya sempurna, tidak sesekali mengalami sebarang keletihan atau kelemahan. (Rujukan: Surah Al-Anfal 8:52)", amalan: "Diamalkan zikir ini sebanyak mungkin agar kita tidak gentar apabila berdepan dengan sebarang keadaan mahupun berdepan dengan si zalim." },
-            { id: 55, arabic: "اَلْمَتِينُ", rumi: "Ya Matiin", meaning: "Maha Sempurna Kekuatan-Nya", penerangan: "Kekuasaan dan kekuatanNya amat teguh serta tidak dapat digugat sama sekali. (Rujukan: Surah Adz-Dzariyat 51:58)", amalan: "Diamalkanlah zikir ini sebanyak mungkin kerana ianya mempunyai fadhilat yang besar sekali, antaranya untuk mengembalikan kekuatan sehingga musuh merasa gentar untuk mengganggu." },
-            { id: 56, arabic: "اَلْوَلِيُّ", rumi: "Ya Waliy", meaning: "Maha Melindungi", penerangan: "Penolong, pelindung, dan pengurus kepada orang-orang yang beriman. (Rujukan: Surah Al-Baqarah 2:257)", amalan: "Barangsiapa yang menjawat sebarang jawatan atau kedudukan, maka amatlah elok sekali mengamalkan zikir ini sebanyak mungkin kerana dengan izin-Nya, kedudukan kita akan kukuh & terhindar dari sebarang gangguan oleh orang-orang yang bersifat dengki." },
-            { id: 57, arabic: "اَلْحَمِيدُ", rumi: "Ya Hamiid", meaning: "Maha Terpuji", penerangan: "Zat yang paling layak dan berhak menerima segala pujian dalam setiap keadaan. (Rujukan: Surah Ibrahim 14:1)", amalan: "Perbanyakkan zikir ini sebagai pengakuan bahawa hanya Allah sahaja yang paling berhak menerima segala pujian." },
-            { id: 58, arabic: "اَلْمُحْصِي", rumi: "Ya Muhshiy", meaning: "Maha Menghitung", penerangan: "Mengetahui dengan terperinci jumlah dan setiap pergerakan sekecil-kecil makhlukNya. (Rujukan: Surah Maryam 19:94)", amalan: "Sekiranya kita inginkan diri kita digolongkan dalam pertolongan yang selalu dekat dengan Allah (muraqabah), maka amalkan zikir ini sebanyak mungkin sesudah solat 5 waktu." },
-            { id: 59, arabic: "اَلْمُبْدِئُ", rumi: "Ya Mubdi'", meaning: "Maha Memulai / Pemula", penerangan: "Memulakan dan mewujudkan seluruh penciptaan alam ini dari asalnya yang tiada. (Rujukan: Surah Al-Buruj 85:13)", amalan: "Agar segala apa yang kita rancangkan akan berhasil, maka zikirkan sebanyak 470 kali setiap hari. Insya Allah." },
-            { id: 60, arabic: "اَلْمُعِيدُ", rumi: "Ya Mu'id", meaning: "Maha Mengembalikan", penerangan: "Mengembalikan yang hidup kepada mati, dan membangkitkan semula kepada hidup di akhirat. (Rujukan: Surah Ar-Rum 30:27)", amalan: "Andai ada anggota keluarga yang menghilangkan diri dan sebagainya, amalkan zikir ini sebanyak 124 kali setiap hari sesudah solat. Insya Allah dipertunjukkan akan hasilnya." },
-            { id: 61, arabic: "اَلْمُحْيِي", rumi: "Ya Muhyiy", meaning: "Maha Menghidupkan", penerangan: "Pemberi nyawa kepada segala sesuatu yang wujud sama ada manusia, haiwan atau tumbuhan. (Rujukan: Surah Fussilat 41:39)", amalan: "Amalkan zikir ini sebanyak 58 kali setiap hari, Insya Allah kita akan diberikan kemuliaan darjat dunia & akhirat kelak." },
-            { id: 62, arabic: "اَلْمُمِيتُ", rumi: "Ya Mumiit", meaning: "Maha Mematikan", penerangan: "Yang mencabut nyawa dan menamatkan tempoh hayat setiap makhluk. (Rujukan: Surah Al-Hijr 15:23)", amalan: "Barangsiapa memperbanyakkan zikir ini, Insya Allah akan dipermudahkan dalam perniagaan, berpolitik dan sebagainya." },
-            { id: 63, arabic: "اَلْحَيُّ", rumi: "Ya Hayyu", meaning: "Maha Hidup", penerangan: "Maha Hidup secara sempurna, kekal dan abadi, tanpa permulaan dan pengakhiran. (Rujukan: Surah Al-Baqarah 2:255)", amalan: "Untuk mencapai kekuatan mental/batiniah di dalam menjalani kehidupan, perbanyakkanlah zikir ini." },
-            { id: 64, arabic: "اَلْقَيُّومُ", rumi: "Ya Qayyuum", meaning: "Maha Berdiri Dengan Sendiri-Nya", penerangan: "Zat yang mentadbir urusan alam sentiasa dan tidak bergantung kepada sesiapa. (Rujukan: Surah Al-Baqarah 2:255)", amalan: "Telah berkata Imam Ghazali bahawa barangsiapa yang ingin memperolehi harta yang banyak lagi berkat, ingin dikasihi oleh setiap manusia, ingin berwibawa, ditakuti musuh dan ingin menjadi insan yang terhormat, maka berzikirlah dengan \"Ya Hayyu Ya Qayyuum\" sebanyak 1,000 kali setiap malam atau siang hari. Hendaklah melakukannya secara berterusan, Insya Allah akan tercapai segala hajat." },
-            { id: 65, arabic: "اَلْوَاجِدُ", rumi: "Ya Waajid", meaning: "Maha Menemukan", penerangan: "Bebas dari sebarang keperluan, apa sahaja yang dikehendakiNya pasti akan ditemukanNya. (Berdasarkan sifat kaya Allah)", amalan: "Andai berkeinginan keperibadian yang kukuh, tidak mudah terpengaruh dan teguh pendirian, maka perbanyakkan zikir ini." },
-            { id: 66, arabic: "اَلْمَاجِدُ", rumi: "Ya Maajid", meaning: "Maha Mulia", penerangan: "Zat yang sangat luhur, mulia, serta sempurna pada kurniaanNya yang melimpah ruah. (Rujukan: Surah Al-Buruj 85:15)", amalan: "Demi kecerdasan otak dan agar dipermudahkan hati untuk menerima pelajaran, maka hendaklah pelajar tersebut memperbanyakkan zikir ini setiap hari." },
-            { id: 67, arabic: "اَلْوَاحِدُ", rumi: "Ya Waahid", meaning: "Maha Esa", penerangan: "Tunggal dari segi sifat dan perbuatan, tiada sekutu atau tandingan bagiNya. (Rujukan: Surah Al-Baqarah 2:163)", amalan: "Bagi pasangan yang belum mempunyai cahaya mata & tersangat ingin untuk menimangnya, amalkanlah zikir ini sebanyak 190 kali setiap kali selesai menunaikan solat 5 waktu selama satu bulan & selama itu juga hendaklah berpuasa sunat Isnin & Khamis, Insya Allah." },
-            { id: 68, arabic: "اَلصَّمَدُ", rumi: "Ya Somad", meaning: "Maha Diminta / Tempat Bergantung", penerangan: "Hanya kepadaNya sahaja seluruh makhluk memohon dan bergantung harap memenuhi hajat. (Rujukan: Surah Al-Ikhlas 112:2)", amalan: "Ketika dalam kelaparan akibat sesat atau kesempitan hidup, maka pohonlah kepada Allah dengan zikir ini sebanyak mungkin. Insya Allah, diri akan berasa segar sentiasa." },
-            { id: 69, arabic: "اَلْقَادِرُ", rumi: "Ya Qaadir", meaning: "Maha Kuasa", penerangan: "Mempunyai kuasa untuk melakukan atau tidak melakukan sesuatu menurut iradatNya. (Rujukan: Surah Yasin 36:81)", amalan: "Apabila kita berhajatkan sesuatu namun ianya selalu gagal, maka amalkan zikir ini sebanyak 305 kali setiap hari, Insya Allah segala hajat akan berhasil." },
-            { id: 70, arabic: "اَلْمُقْتَدِرُ", rumi: "Ya Muqtadir", meaning: "Maha Menentukan", penerangan: "Kekuasaan yang berkesan dalam menentukan ukuran dan masa bagi segala perkara. (Rujukan: Surah Al-Kahf 18:45)", amalan: "Agar tercapai tujuan yang dikehendaki, selain dari berikhtiar secara lahariah, maka berzikirlah dengan zikir ini seberapa mampu sehingga ikhtiar kita itu berhasil kerana zikir ini akan mempercepatkan keberhasilan hajat kita." },
-            { id: 71, arabic: "اَلْمُقَدِّمُ", rumi: "Ya Muqaddim", meaning: "Maha Mendahulukan", penerangan: "Mendahulukan apa sahaja yang dikehendaki (rezeki, ajal, hidayah) mengikut hikmahNya. (Rujukan: Hadis Sahih)", amalan: "Menurut Imam Ahmad bin Ali Al-Buuniy, beliau berkata: \"Barang siapa yang berzikir dengan zikir ini sebanyak 184 kali setiap hari, Insya Allah, nescaya segala usahanya akan berhasil\"." },
-            { id: 72, arabic: "اَلْمُؤَخِّرُ", rumi: "Ya Mu'ahkhir", meaning: "Maha Melambat-lambatkan", penerangan: "Menangguhkan, mengakhirkan atau membelakangkan sesuatu pada waktu yang paling sesuai. (Rujukan: Hadis Sahih)", amalan: "Bagi meninggikan lagi ketaatan kita kepada Allah, perbanyakkanlah zikir ini." },
-            { id: 73, arabic: "اَلْأَوَّلُ", rumi: "Ya Awwal", meaning: "Maha Pemulaan", penerangan: "Telah wujud sejak azali sebelum wujudnya sesuatu apa pun (Tiada permulaan). (Rujukan: Surah Al-Hadid 57:3)", amalan: "Barangsiapa yang mengamalkan zikir ini sebanyak 37 kali setiap hari, Insya Allah segala apa yang dihajati akan diperkenankan Allah." },
-            { id: 74, arabic: "اَلْآخِرُ", rumi: "Ya Akhir", meaning: "Maha Penghabisan", penerangan: "Kekal wujud setelah segalanya musnah dan binasa (Tiada pengakhiran). (Rujukan: Surah Al-Hadid 57:3)", amalan: "Amalkan berzikir sebanyak 200 kali sesudah solat 5 waktu selama satu bulan, Insya Allah Tuhan akan membuka pintu rezeki yang halal." },
-            { id: 75, arabic: "اَلظَّاهِرُ", rumi: "Ya Dhaahir", meaning: "Maha Menyatakan", penerangan: "KewujudanNya amat nyata dan jelas terbukti menerusi penciptaan alam semesta ini. (Rujukan: Surah Al-Hadid 57:3)", amalan: "Diamalkanlah zikir ini sebanyak 1,106 kali selesai solat waktu di tempat yang sunyi (khalwat), nescaya Allah akan membuka hijab padanya dari segala rahsia yang pelik dan sukar serta diberi kefahaman ilmu." },
-            { id: 76, arabic: "اَلْبَاطِنُ", rumi: "Ya Baathinu", meaning: "Maha Tersembunyi", penerangan: "ZatNya tersembunyi dari jangkauan pandangan pancaindera makhluk di dunia. (Rujukan: Surah Al-Hadid 57:3)", amalan: "Seperti no. 75 juga (untuk dibuka kefahaman ilmu dan rahsia), tetapi amalkan sebanyak 30 kali sesudah solat fardhu." },
-            { id: 77, arabic: "اَلْوَالِي", rumi: "Ya Waaliy", meaning: "Maha Menguasai Urusan", penerangan: "Menguasai, mentadbir dan memiliki hak ke atas segala urusan pengurusan alam. (Rujukan: Surah Ar-Ra'd 13:11)", amalan: "Memperbanyakkan zikir ini setiap pagi & petang boleh menyebabkan seseorang itu menjadi orang yang makrifat, iaitu hatinya dibuka oleh Allah. Difahamkan para wali Allah selalu memperbanyakkan zikir ini." },
-            { id: 78, arabic: "اَلْمُتَعَالِي", rumi: "Ya Muta'aAliy", meaning: "Maha Suci / Tinggi", penerangan: "Maha Suci dan bersih dari sebarang sifat kemanusiaan atau ciri-ciri kekurangan makhluk. (Rujukan: Surah Ar-Ra'd 13:9)", amalan: "Sekiranya kita akan berjumpa dengan mereka yang berkedudukan tinggi atau mereka yang sukar untuk ditemui, maka bacalah zikir ini sebanyak mungkin sewaktu mengadap. Insya Allah dengan mudah kita akan berjumpa dengannya & segala hajat yang penting-penting akan berhasil." },
-            { id: 79, arabic: "اَلْبَرُّ", rumi: "Ya Barr", meaning: "Maha Bagus (Sumber Segala Kelebihan)", penerangan: "Sumber segala kebaikan, sentiasa melimpahkan ihsan dan kebaikan kepada hambaNya. (Rujukan: Surah At-Tur 52:28)", amalan: "Diamalkanlah zikir ini sebanyak mungkin setiap hari, InsyaAllah segala apa yang kita hajati akan terlaksana dengan mudah." },
-            { id: 80, arabic: "اَلتَّوَّابُ", rumi: "Ya Tawwaab", meaning: "Maha Penerima Taubat", penerangan: "Membuka pintu taubat seluas-luasnya dan menerima orang yang kembali kepadaNya. (Rujukan: Surah An-Nasr 110:3)", amalan: "Bagi orang yang selalu membuat dosa & ingin bertaubat maka hendaklah memperbanyakkan zikir ini supaya dengan mudah diberikan petunjuk kembali ke jalan yang lurus." },
-            { id: 81, arabic: "اَلْمُنْتَقِمُ", rumi: "Ya Muntaqim", meaning: "Maha Penyiksa", penerangan: "Menghukum penderhaka yang melampaui batas setelah diberi pelbagai peringatan. (Rujukan: Surah As-Sajdah 32:22)", amalan: "Jika kita berhadapan dengan orang yang zalim, supaya dia tidak melakukan kezalimannya terhadap kita, maka hendaklah kita memperbanyakkan zikir ini setiap kali sesudah solat fardhu. Insya Allah, kita akan mendapat pertolongan Allah." },
-            { id: 82, arabic: "اَلْعَفُوُّ", rumi: "Ya 'Afuww", meaning: "Maha Pemaaf", penerangan: "Menghapuskan dan memadamkan dosa hamba seolah-olah ia tidak pernah dilakukan. (Rujukan: Surah An-Nisa 4:149)", amalan: "Barangsiapa memperbanyakkan zikir ini, nescaya dia akan diampuni segala dosanya oleh Allah." },
-            { id: 83, arabic: "اَلرَّءُوفُ", rumi: "Ya Rauuf", meaning: "Maha Mengasihi", penerangan: "Sifat belas kasihan dan kasih sayang yang amat tinggi, meringankan beban hambaNya. (Rujukan: Surah At-Tawbah 9:128)", amalan: "Bagi sesiapa yang inginkan dirinya disenangi oleh teman atau sesiapa sahaja yang memandangnya, amalkan zikir ini seberapa mampu sama ada pada waktu siang mahupun malam." },
-            { id: 84, arabic: "مَالِكُ الْمُلْكِ", rumi: "Ya Maalikul Mulk", meaning: "Maha Pemilik Kekuasaan", penerangan: "Pemilik mutlak segala kerajaan alam semesta; Dia memberi kerajaan kepada sesiapa yang dikehendaki. (Rujukan: Surah Ali 'Imran 3:26)", amalan: "Seseorang pengarah atau ketua yang ingin kedudukan yang kekal & tetap tanpa diganggu gugat, hendaklah selalu mengamalkan zikir ini sebanyak 212 kali sesudah solat fardhu & 212 pada setiap malam selama sebulan. Insya Allah akan mendapat pertolongan Allah." },
-            { id: 85, arabic: "ذُو الْجَلَالِ وَالْإِكْرَامِ", rumi: "Ya Zul Jalaali wal Ikraam", meaning: "Maha Pemilik Keagungan dan Kemuliaan", penerangan: "Zat yang layak diagungkan (Jalal) dan mengurniakan nikmat (Ikram) tidak terhingga. (Rujukan: Surah Ar-Rahman 55:27)", amalan: "Diamalkanlah zikir ini sebanyak 65 kali setiap hari selama sebulan, Insya Allah segala hajat kita akan tercapai dengan pertolongan Allah." },
-            { id: 86, arabic: "اَلْمُقْسِطُ", rumi: "Ya Muqsith", meaning: "Maha Mengadili", penerangan: "Mengadili dan memberikan hak kepada hambaNya secara adil tanpa berat sebelah. (Rujukan: Surah Al-Hujurat 49:9)", amalan: "Berzikirlah dengan zikir ini mengikut kemampuan, InsyaAllah Tuhan akan menganugerahkan sifat adil kepada mereka yang mengamalkannya." },
-            { id: 87, arabic: "اَلْجَامِعُ", rumi: "Ya Jaami'", meaning: "Maha Mengumpulkan", penerangan: "Menyatukan yang berbeza dan mengumpulkan manusia kelak pada Hari Penghakiman. (Rujukan: Surah Ali 'Imran 3:9)", amalan: "Sekiranya ada di kalangan keluarga kita atau isteri kita yang lari dari rumah, maka amalkanlah zikir ini sebanyak mungkin pada setiap hari dengan niat semoga Allah menyedarkan orang tersebut. Dengan izin Allah orang yang lari itu akan pulang dalam jangka waktu yang singkat." },
-            { id: 88, arabic: "اَلْغَنِيُّ", rumi: "Ya Ghaniy", meaning: "Maha Kaya Raya", penerangan: "Kaya dengan sendirinya, bebas sama sekali dari memerlukan bantuan sesiapa pun. (Rujukan: Surah Luqman 31:26)", amalan: "Diamalkan zikir ini pada setiap hari sebanyak mungkin, Insya Allah apa yang kita usahakan akan cepat berhasil & kekayaan yang kita perolehi itu akan mendapat berkat." },
-            { id: 89, arabic: "اَلْمُغْنِي", rumi: "Ya Mughniy", meaning: "Maha Pemberi Kekayaan", penerangan: "Menganugerahkan harta, kecukupan, dan ketenangan jiwa kepada makhlukNya. (Rujukan: Surah An-Najm 53:48)", amalan: "Mintalah kekayaan yang bermanfaat untuk kehidupan dunia & akhirat kepada Allah dengan memperbanyakkan zikir ini, Insya Allah segala hajat kita akan tercapai." },
-            { id: 90, arabic: "اَلْمَانِعُ", rumi: "Ya Maani'", meaning: "Maha Membela / Menolak", penerangan: "Menghalang anasir buruk dan membela hambaNya yang soleh dari sebarang bahaya/mudarat. (Berdasarkan sifat pemeliharaanNya)", amalan: "Andai kita selalu mengamalkan zikir ini sebanyak 161 kali pada waktu menjelang solat subuh setiap hari, Insya Allah kita akan terhindar dari orang-orang yang zalim & suka membuat angkara." },
-            { id: 91, arabic: "اَلضَّارُّ", rumi: "Ya Dhaarr", meaning: "Maha Pembuat Bahaya", penerangan: "Berhak mendatangkan ujian atau mudarat atas kehendakNya sebagai hikmah pengajaran. (Rujukan: Surah Al-An'am 6:17)", amalan: "Asma ini sangat berguna di dalam ikhtiar kita untuk menyembuhkan sesuatu penyakit yang mana sudah lama dihidapi & telah puas diubati. Amalkanlah zikir ini sebanyak 1,001 kali pada setiap hari, Insya Allah dengan ikhtiar ini penyakit itu akan cepat sembuh." },
-            { id: 92, arabic: "اَلنَّافِعُ", rumi: "Ya Naafi'", meaning: "Maha Pemberi Manfaat", penerangan: "Sumber segala manfaat dan kebaikan yang dikecap oleh makhluk di alam semesta. (Rujukan: Surah Al-An'am 6:17)", amalan: "Menurut Imam Ahmad Al-Buuniy, barang siapa mengamalkan zikir ini setiap hari, maka bagi orang yang sakit, sakitnya akan sembuh, & bagi orang yang susah akan dihilangkan kesusahannya dengan izin Allah." },
-            { id: 93, arabic: "اَلنُّورُ", rumi: "Ya Nuur", meaning: "Maha Pemberi Cahaya", penerangan: "Menerangi hati yang gelap dengan hidayah dan pencipta cahaya di langit dan bumi. (Rujukan: Surah An-Nur 24:35)", amalan: "Menurut Sheikh Ahmad bin Muhammad As Shawi, barangsiapa yang menghendaki kemuliaan yang agung & memperolehi apa yang dimaksudkan baik kebaikan dunia mahupun kebaikan di akhirat kelak, maka hendaklah selalu berzikir dengan zikir ini setiap pagi & petang." },
-            { id: 94, arabic: "اَلْهَادِي", rumi: "Ya Haadiy", meaning: "Maha Pemberi Petunjuk", penerangan: "Memberikan panduan akal, fitrah dan agama supaya hambaNya menemui kebenaran. (Rujukan: Surah Al-Furqan 25:31)", amalan: "Bagi sesiapa yang dalam perjalanan ke suatu tempat tertentu, kemudian ia tersesat, hendaklah ia memohon petunjuk Allah dengan memperbanyakkan zikir ini, Insya Allah akan diberikan pertolongan Allah dan akan cepat lepas dari kesesatan tersebut." },
-            { id: 95, arabic: "اَلْبَدِيعُ", rumi: "Ya Baadii", meaning: "Maha Indah / Tiada Bandingan", penerangan: "Pencipta yang mereka bentuk alam ini tanpa ada sebarang rujukan atau contoh sebelumnya. (Rujukan: Surah Al-Baqarah 2:117)", amalan: "Andai kita mempunyai rancangan yang sangat penting dan bagi memastikan rancangan kita itu berjaya & berjalan lancar, maka berzikirlah dengan zikir ini sebanyak 500 kali selepas solat fardhu. Insya Allah Tuhan akan memberikan pertolongan hingga rancangan kita berjaya & berjalan lancar." },
-            { id: 96, arabic: "اَلْبَاقِي", rumi: "Ya Baaqy", meaning: "Maha Kekal", penerangan: "Maha Kekal selama-lamanya meskipun seluruh ciptaan di alam ini hancur binasa. (Rujukan: Surah Ar-Rahman 55:27)", amalan: "Diamalkan zikir ini sebanyak mungkin tanpa mengira batas waktu, Insya Allah dengan ikhtiar ini semua pekerjaan yang telah menjadi punca rezeki tidak akan mudah terlepas, perniagaan tidak akan rugi atau bankrap dengan berkat zikir ini." },
-            { id: 97, arabic: "اَلْوَارِثُ", rumi: "Ya Waarits", meaning: "Maha Membahagi / Mewarisi", penerangan: "Kekal hidup mewarisi segala isi bumi dan langit setelah makhluk dimatikan. (Rujukan: Surah Al-Hijr 15:23)", amalan: "Sekiranya kita berzikir sebanyak 500 kali selepas solat fardhu atau sebagainya, supaya segala urusan kita itu berjalan lancar, maka hendaklah pada setiap malam berzikir dengan zikir ini sebanyak 707 kali. Insya Allah berkat zikir ini Allah akan memberi petunjuk sehingga usaha kita akan berhasil dengan baik & memberangsangkan." },
-            { id: 98, arabic: "اَلرَّشِيدُ", rumi: "Ya Rasyiid", meaning: "Maha Pandai / Bijaksana", penerangan: "Mengatur dan mentadbir urusan makhlukNya ke jalan yang lurus tanpa sebarang kesilapan. (Rujukan: Surah Al-Kahf 18:17)", amalan: "Walaupun kita tergolong dalam golongan yang cerdas otak, namun biasakanlah zikir ini sebanyak mungkin, nescaya otak kita akan menjadi bertambah cerdas." },
-            { id: 99, arabic: "اَلصَّبُورُ", rumi: "Ya Shabuur", meaning: "Maha Penyabar", penerangan: "Maha penyabar dalam memberi tangguh hukuman kepada yang berdosa agar mereka kembali bertaubat. (Berdasarkan sifat Sabar Tuhan)", amalan: "Agar kita diberi kesabaran oleh Allah dalam segala hal, maka perbanyakkanlah zikir ini menurut kemampuan. Dengan sifat sabar & penuh pengharapan kepada Allah, maka segala usaha & upaya akan mencapai kejayaan." }
-        ];
-
-        // State variables
-        let currentIndex = 0;
-        let activePanel = null; // 'penerangan', 'amalan', or null
-
+<!-- ... existing code ... -->
         // DOM Elements
         const arabicText = document.getElementById('arabicText');
         const rumiText = document.getElementById('rumiText');
         const meaningText = document.getElementById('meaningText');
+        const infoSheetOverlay = document.getElementById('infoSheetOverlay');
+        const infoSheet = document.getElementById('infoSheet');
+        const tabPenerangan = document.getElementById('tabPenerangan');
+        const tabAmalan = document.getElementById('tabAmalan');
         const peneranganBox = document.getElementById('peneranganBox');
         const peneranganText = document.getElementById('peneranganText');
         const sudaisAudioContainer = document.getElementById('sudaisAudioContainer');
@@ -308,6 +267,9 @@
         const btnPenerangan = document.getElementById('btnPenerangan');
         const btnAmalan = document.getElementById('btnAmalan');
         const nameSelector = document.getElementById('nameSelector');
+        const counterBadge = document.getElementById('counterBadge');
+        const progressBar = document.getElementById('progressBar');
+        const cardNumberPill = document.getElementById('cardNumberPill');
         const resetModal = document.getElementById('resetModal');
         const cardNumberBg = document.getElementById('cardNumberBg');
         const prevBtn = document.getElementById('prevBtn');
@@ -315,121 +277,26 @@
         const slideContainer = document.getElementById('slideContainer');
 
         // Populate dropdown selector with all 99 names
-        function populateSelector() {
-            nameSelector.innerHTML = '';
-            asmaulHusna.forEach((item, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${item.id}. ${item.rumi}`;
-                option.className = 'bg-slate-900 text-slate-100';
-                nameSelector.appendChild(option);
-            });
-        }
-
-        // Jump directly to selected index from dropdown
-        function jumpToName(indexValue) {
-            const newIndex = parseInt(indexValue, 10);
-            if (!isNaN(newIndex) && newIndex >= 0 && newIndex < asmaulHusna.length && newIndex !== currentIndex) {
-                const direction = newIndex > currentIndex ? 'next' : 'prev';
-                currentIndex = newIndex;
-                updateCard(direction);
-            }
-        }
-
-        // Initialize App
-        function init() {
-            populateSelector();
-            // Load saved progress from localStorage if it exists
-            const savedIndex = localStorage.getItem('asmaulHusnaIndex');
-            if (savedIndex !== null) {
-                const parsed = parseInt(savedIndex, 10);
-                if (!isNaN(parsed) && parsed >= 0 && parsed < asmaulHusna.length) {
-                    currentIndex = parsed;
-                }
-            }
-            updateCard();
-        }
-
-        // Update the card UI based on currentIndex
-        function updateCard(direction = 'none') {
-            stopAllAudio();
-            const data = asmaulHusna[currentIndex];
-            
-            // Animation handling
-            if (direction === 'next') {
-                slideContainer.classList.add('fade-out-left');
-            } else if (direction === 'prev') {
-                slideContainer.classList.add('fade-out-right');
-            }
-
-            setTimeout(() => {
-                arabicText.textContent = data.arabic;
-                rumiText.textContent = data.rumi;
-                meaningText.textContent = data.meaning;
-                if (peneranganText) peneranganText.textContent = data.penerangan;
+// ... existing code ...
                 if (amalanTitle) amalanTitle.textContent = `Amalan Zikir (${data.rumi})`;
                 if (amalanText) amalanText.textContent = data.amalan;
                 if (nameSelector) nameSelector.value = currentIndex;
+                if (counterBadge) counterBadge.textContent = `${data.id} / ${asmaulHusna.length}`;
+                if (cardNumberPill) cardNumberPill.textContent = `Nama #${data.id}`;
+                if (progressBar) progressBar.style.width = `${(data.id / asmaulHusna.length) * 100}%`;
                 cardNumberBg.textContent = data.id;
 
                 // Semak jika ada rujukan ayat Al-Quran (Surah:Ayat) untuk audio Syeikh Al-Sudais
-                const refMatch = extractQuranReference(data.penerangan);
-                if (refMatch && sudaisAudioContainer) {
-                    sudaisAudioContainer.classList.remove('hidden');
-                    if (sudaisRefBadge) sudaisRefBadge.textContent = `Al-Quran ${refMatch.surah}:${refMatch.ayah}`;
-                } else if (sudaisAudioContainer) {
-                    sudaisAudioContainer.classList.add('hidden');
-                }
-
-                // Tutup kotak penerangan & amalan apabila bertukar kad
-                closeAllInfoPanels();
-
-                // Update button states
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === asmaulHusna.length - 1;
-
-                // Save progress
-                localStorage.setItem('asmaulHusnaIndex', currentIndex);
-
-                // Remove animation classes to fade back in
-                slideContainer.classList.remove('fade-out-left', 'fade-out-right');
-            }, direction !== 'none' ? 200 : 0);
-        }
-
-        // Next button handler
-        function nextName() {
-            if (currentIndex < asmaulHusna.length - 1) {
-                currentIndex++;
-                updateCard('next');
-            }
-        }
-
-        // Prev button handler
-        function prevName() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateCard('prev');
-            }
-        }
-
-        // Custom Modal Handlers for Reset
-        function openResetModal() {
-            resetModal.classList.remove('hidden');
-        }
-
-        function closeResetModal() {
-            resetModal.classList.add('hidden');
-        }
-
-        function confirmResetProgress() {
-            closeResetModal();
-            currentIndex = 0;
-            updateCard('prev');
-        }
-
-        // --- Toggle Penerangan & Amalan ---
+// ... existing code ...
+        // --- Toggle Penerangan & Amalan (Mobile Bottom Sheet) ---
         function closeAllInfoPanels() {
             activePanel = null;
+            if (infoSheet) infoSheet.classList.add('translate-y-full');
+            setTimeout(() => {
+                if (!activePanel && infoSheetOverlay) {
+                    infoSheetOverlay.classList.add('hidden');
+                }
+            }, 250);
             if (peneranganBox) peneranganBox.classList.add('hidden');
             if (amalanBox) amalanBox.classList.add('hidden');
             if (btnPenerangan) btnPenerangan.classList.remove('ring-2', 'ring-teal-300', 'bg-teal-700');
@@ -437,231 +304,83 @@
         }
 
         function toggleInfoPanel(panelType) {
-            if (activePanel === panelType) {
-                closeAllInfoPanels();
+            if (activePanel === panelType && infoSheetOverlay && !infoSheetOverlay.classList.contains('hidden')) {
                 return;
             }
-            closeAllInfoPanels();
             activePanel = panelType;
+
+            if (infoSheetOverlay) infoSheetOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                if (infoSheet) infoSheet.classList.remove('translate-y-full');
+            });
+
+            // Reset tab & box styles
+            if (peneranganBox) peneranganBox.classList.add('hidden');
+            if (amalanBox) amalanBox.classList.add('hidden');
+            if (tabPenerangan) tabPenerangan.className = 'flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300';
+            if (tabAmalan) tabAmalan.className = 'flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300';
+            if (btnPenerangan) btnPenerangan.classList.remove('ring-2', 'ring-teal-300', 'bg-teal-700');
+            if (btnAmalan) btnAmalan.classList.remove('ring-2', 'ring-amber-300', 'bg-emerald-700');
+
             if (panelType === 'penerangan') {
                 peneranganBox.classList.remove('hidden');
-                btnPenerangan.classList.add('ring-2', 'ring-teal-300', 'bg-teal-700');
+                if (tabPenerangan) tabPenerangan.className = 'flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all bg-teal-600 text-white shadow';
+                if (btnPenerangan) btnPenerangan.classList.add('ring-2', 'ring-teal-300', 'bg-teal-700');
             } else if (panelType === 'amalan') {
                 amalanBox.classList.remove('hidden');
-                btnAmalan.classList.add('ring-2', 'ring-amber-300', 'bg-emerald-700');
+                if (tabAmalan) tabAmalan.className = 'flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all bg-amber-600 text-white shadow';
+                if (btnAmalan) btnAmalan.classList.add('ring-2', 'ring-amber-300', 'bg-emerald-700');
             }
         }
 
         // --- Audio Functionality ---
-        let currentAudio = null;
-        let isSudaisPlaying = false;
-        const sudaisAudioCache = {}; // Simpan URL audio Syeikh Al-Sudais supaya pantas
-
-        // Pastikan senarai suara dimuatkan (untuk sesetengah pelayar web)
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = function() {
-                window.speechSynthesis.getVoices();
-            };
-        }
-
-        // Hentikan semua audio (TTS & MP3) dengan bersih
-        function stopAllAudio() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio = null;
-            }
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-            isSudaisPlaying = false;
-            if (sudaisBtnLabel) {
-                sudaisBtnLabel.textContent = 'Dengar Ayat Dalil (Syeikh Al-Sudais)';
-            }
-            if (btnNameAudio) {
-                btnNameAudio.classList.remove('ring-2', 'ring-yellow-300', 'animate-pulse');
-            }
-        }
-
-        // Ekstrak nombor Surah dan Ayat daripada teks penerangan (contoh: "112:1")
-        function extractQuranReference(text) {
-            if (!text) return null;
-            const match = text.match(/(\d+):(\d+)/);
-            if (!match) return null;
-            return {
-                surah: parseInt(match[1], 10),
-                ayah: parseInt(match[2], 10)
-            };
-        }
-
-        // Format teks Arab berbaris penuh untuk Wakaf (sukun di hujung) mengikut tajwid
-        function formatArabicForWaqf(arabicStr) {
-            const trimmed = arabicStr.trim();
-            // Jika huruf akhir bersyaddah + baris pendek (contoh: اَلْحَقُّ), buang baris pendek sahaja agar syaddah wakaf kekal jelas
-            if (/[\u0651][\u064E\u064F\u0650]$/.test(trimmed)) {
-                return trimmed.replace(/[\u064E\u064F\u0650]$/, '');
-            }
-            // Jika huruf akhir berbaris pendek (Fathah, Dammah, Kasrah), tukar kepada tanda Sukun (wakaf)
-            if (/[\u064E\u064F\u0650]$/.test(trimmed)) {
-                return trimmed.replace(/[\u064E\u064F\u0650]$/, '\u0652');
-            }
-            // Jika berakhir dengan huruf Mad (contoh: اَلْمُحْصِي), kekalkan seadanya
-            return trimmed;
-        }
-
-        // Mainkan sebutan Arab Fusha (berbaris penuh + wakaf) bagi Nama Allah semasa
-        function playCurrentNameAudio() {
-            stopAllAudio();
-
-            const data = asmaulHusna[currentIndex];
-            // Baca terus teks tulisan ARAB berbaris penuh (bukan Rumi) dengan tanda wakaf
-            const textToRead = formatArabicForWaqf(data.arabic);
-
-            if (btnNameAudio) {
-                btnNameAudio.classList.add('ring-2', 'ring-yellow-300');
-            }
-
-            let useLocalTTS = false;
-
-            // Gunakan Web Speech API (speechSynthesis) dengan bahasa Arab baku (ar-SA)
-            if ('speechSynthesis' in window) {
-                const voices = window.speechSynthesis.getVoices();
-                const arabicVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
-
-                // Utamakan suara Arab Saudi (ar-SA) / Fusha yang tersedia dalam pelayar
-                const preferredMaleNames = ['hamed', 'maged', 'tariq', 'naayf', 'majed', 'male', 'saudi'];
-                const preferredVoice =
-                    arabicVoices.find(v => v.lang.toLowerCase() === 'ar-sa' && preferredMaleNames.some(k => v.name.toLowerCase().includes(k))) ||
-                    arabicVoices.find(v => v.lang.toLowerCase() === 'ar-sa') ||
-                    arabicVoices.find(v => preferredMaleNames.some(k => v.name.toLowerCase().includes(k))) ||
-                    arabicVoices[0];
-
-                if (preferredVoice) {
-                    useLocalTTS = true;
-                    const utterance = new SpeechSynthesisUtterance(textToRead);
-                    utterance.voice = preferredVoice;
-                    utterance.lang = 'ar-SA';
-                    utterance.rate = 0.85; // Kelajuan sederhana perlahan supaya sebutan huruf & mad jelas
-                    utterance.pitch = 1.0;
-
-                    utterance.onend = () => {
-                        if (btnNameAudio) btnNameAudio.classList.remove('ring-2', 'ring-yellow-300');
-                    };
-                    utterance.onerror = () => {
-                        if (btnNameAudio) btnNameAudio.classList.remove('ring-2', 'ring-yellow-300');
-                    };
-
-                    window.speechSynthesis.speak(utterance);
-                }
-            }
-
-            // Sokongan sandaran (fallback) jika pelayar peranti tidak mempunyai pek suara Arab
-            if (!useLocalTTS) {
-                const audioUrl = `https://translate.googleapis.com/translate_tts?client=tw-ob&ie=UTF-8&tl=ar&q=${encodeURIComponent(textToRead)}`;
-                currentAudio = new Audio(audioUrl);
-                currentAudio.playbackRate = 0.85;
-
-                currentAudio.onended = () => {
-                    if (btnNameAudio) btnNameAudio.classList.remove('ring-2', 'ring-yellow-300');
-                };
-
-                currentAudio.play().catch(error => {
-                    console.error("Ralat memainkan audio:", error);
-                    if (btnNameAudio) {
-                        btnNameAudio.classList.remove('ring-2', 'ring-yellow-300');
-                        const originalHtml = btnNameAudio.innerHTML;
-                        btnNameAudio.innerHTML = `<span class="text-xs font-bold text-red-300">Ralat 🔇</span>`;
-                        setTimeout(() => btnNameAudio.innerHTML = originalHtml, 2000);
-                    }
-                });
-            }
-        }
-
-        // Mainkan bacaan sebenar Syeikh Abdul Rahman Al-Sudais bagi ayat dalil Al-Quran
-        async function playSudaisAyahAudio() {
-            if (isSudaisPlaying) {
-                stopAllAudio();
-                return;
-            }
-
-            stopAllAudio();
-
-            const data = asmaulHusna[currentIndex];
-            const ref = extractQuranReference(data.penerangan);
-            if (!ref) return;
-
-            const cacheKey = `${ref.surah}:${ref.ayah}`;
-            if (sudaisBtnLabel) {
-                sudaisBtnLabel.textContent = 'Memuatkan bacaan...';
-            }
-
-            try {
-                let audioUrl = sudaisAudioCache[cacheKey];
-                if (!audioUrl) {
-                    const surahPad = String(ref.surah).padStart(3, '0');
-                    const ayahPad = String(ref.ayah).padStart(3, '0');
-                    audioUrl = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${surahPad}${ayahPad}.mp3`;
-                    sudaisAudioCache[cacheKey] = audioUrl;
-                }
-
-                currentAudio = new Audio(audioUrl);
-                isSudaisPlaying = true;
-
-                if (sudaisBtnLabel) {
-                    sudaisBtnLabel.textContent = 'Hentikan Bacaan (Syeikh Al-Sudais)';
-                }
-
-                currentAudio.onended = () => {
-                    stopAllAudio();
-                };
-
-                currentAudio.onerror = () => {
-                    stopAllAudio();
-                    if (sudaisBtnLabel) {
-                        sudaisBtnLabel.textContent = 'Audio tidak tersedia buat masa ini';
-                        setTimeout(() => {
-                            if (!isSudaisPlaying && sudaisBtnLabel) {
-                                sudaisBtnLabel.textContent = 'Dengar Ayat Dalil (Syeikh Al-Sudais)';
-                            }
-                        }, 2500);
-                    }
-                };
-
-                await currentAudio.play();
-            } catch (error) {
-                console.error("Ralat memainkan audio Syeikh Al-Sudais:", error);
-                stopAllAudio();
-            }
-        }
-
-        // --- Touch Swipe Support ---
+// ... existing code ...
+        // --- Touch Swipe Support (Enhanced Mobile Drag Feel) ---
         let touchstartX = 0;
         let touchstartY = 0;
-        let touchendX = 0;
-        let touchendY = 0;
+        let isHorizontalSwipe = false;
 
-        function handleGesture() {
-            const diffX = touchendX - touchstartX;
-            const diffY = touchendY - touchstartY;
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        slideContainer.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].clientX;
+            touchstartY = e.changedTouches[0].clientY;
+            isHorizontalSwipe = false;
+            slideContainer.classList.add('dragging');
+        }, { passive: true });
+
+        slideContainer.addEventListener('touchmove', e => {
+            const currentX = e.changedTouches[0].clientX;
+            const currentY = e.changedTouches[0].clientY;
+            const diffX = currentX - touchstartX;
+            const diffY = currentY - touchstartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                isHorizontalSwipe = true;
+                // Beri kesan pergerakan kad mengikut jari secara lembut
+                const dampedX = Math.max(-90, Math.min(90, diffX * 0.45));
+                slideContainer.style.transform = `translateX(${dampedX}px)`;
+            }
+        }, { passive: true });
+
+        slideContainer.addEventListener('touchend', e => {
+            slideContainer.classList.remove('dragging');
+            slideContainer.style.transform = '';
+
+            if (!isHorizontalSwipe) return;
+
+            const diffX = e.changedTouches[0].clientX - touchstartX;
+            if (Math.abs(diffX) > 45) {
                 if (diffX < 0) nextName();
                 else prevName();
             }
-        }
-
-        slideContainer.addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-            touchstartY = e.changedTouches[0].screenY;
-        });
-
-        slideContainer.addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            touchendY = e.changedTouches[0].screenY;
-            handleGesture();
-        });
+        }, { passive: true });
 
         // --- Keyboard Navigation ---
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllInfoPanels();
+                closeResetModal();
+                return;
+            }
             if (e.key === 'ArrowRight') {
                 nextName();
             } else if (e.key === 'ArrowLeft') {
