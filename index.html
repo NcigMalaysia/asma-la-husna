@@ -22,15 +22,15 @@
             font-family: 'Amiri', serif;
         }
 
-        /* Safe area support for modern smartphones */
+        /* Sokongan safe-area untuk telefon pintar moden */
         .safe-top {
             padding-top: max(0.75rem, env(safe-area-inset-top));
         }
         .safe-bottom {
             padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
         }
-        
-        /* Slide Transitions */
+
+        /* Animasi peralihan kad */
         .slide-container {
             transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
             touch-action: pan-y;
@@ -48,27 +48,27 @@
             transform: translateX(60px) scale(0.97);
         }
 
-        /* Mobile Bottom Sheet Animation */
+        /* Animasi laci bawah (Bottom Sheet) */
         .sheet-panel {
             transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* Custom Scrollbar for list */
+        /* Bar tatal tersuai */
         ::-webkit-scrollbar {
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #1e293b; 
+            background: #1e293b;
         }
         ::-webkit-scrollbar-thumb {
-            background: #475569; 
+            background: #475569;
             border-radius: 4px;
         }
     </style>
 </head>
 <body class="min-h-[100dvh] flex flex-col items-center justify-between selection:bg-teal-500/30">
 
-    <!-- Top Mobile App Bar -->
+    <!-- Bar Atas Aplikasi Mudah Alih -->
     <header class="w-full max-w-md mx-auto px-4 safe-top pb-2 z-20 shrink-0">
         <div class="flex items-center justify-between gap-2 mb-2.5">
             <div>
@@ -85,31 +85,30 @@
             </button>
         </div>
 
-        <!-- Selector & Progress Bar -->
+        <!-- Menu Pilihan Nombor 1-99 & Lencana Kemajuan -->
         <div class="flex items-center justify-between gap-2 bg-slate-800/70 px-3 py-2 rounded-2xl border border-slate-700/70 backdrop-blur-md">
             <div class="flex items-center gap-2 flex-1 min-w-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                 </svg>
-                <select id="nameSelector" onchange="jumpToName(this.value)" aria-label="Pilih Nama Allah" class="bg-transparent text-teal-100 font-semibold text-sm focus:outline-none cursor-pointer w-full truncate">
+                <select id="nameSelector" onchange="jumpToName(this.value)" aria-label="Pilih Nama Allah" class="bg-slate-800 text-teal-100 font-semibold text-sm focus:outline-none cursor-pointer w-full truncate rounded-lg">
                 </select>
             </div>
             <span class="text-xs font-bold text-teal-300 bg-teal-950/80 px-2.5 py-1 rounded-full border border-teal-700/60 shrink-0" id="counterBadge">1 / 99</span>
         </div>
 
-        <!-- Visual Progress Track -->
+        <!-- Bar Kemajuan Visual -->
         <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-2.5">
             <div id="progressBar" class="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full transition-all duration-300" style="width: 1%;"></div>
         </div>
     </header>
 
-    <!-- Main Mobile Card Area -->
+    <!-- Ruangan Kad Utama -->
     <main class="w-full max-w-md mx-auto px-4 py-2 flex-1 flex flex-col justify-center z-10">
-        <!-- The Card -->
         <div class="w-full slide-container relative" id="slideContainer">
             <div class="w-full min-h-[380px] sm:min-h-[430px] bg-gradient-to-br from-teal-800 via-teal-900 to-emerald-950 rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center shadow-2xl border border-teal-500/30 relative overflow-hidden">
-                
-                <!-- Top Card Row: Number Pill & Audio Button -->
+
+                <!-- Bar Atas Kad: Nombor & Butang Audio -->
                 <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
                     <span class="text-xs font-semibold tracking-wider uppercase text-teal-200/90 bg-teal-950/60 px-3 py-1.5 rounded-full border border-teal-600/40 backdrop-blur-sm" id="cardNumberPill">
                         Nama #1
@@ -121,27 +120,27 @@
                     </button>
                 </div>
 
-                <!-- Background Decorative Number -->
+                <!-- Nombor Latar Belakang -->
                 <div class="absolute -right-3 -bottom-8 text-teal-950/45 text-[9rem] sm:text-[11rem] font-black z-0 leading-none pointer-events-none" id="cardNumberBg">1</div>
 
-                <!-- Arabic, Rumi & Meaning -->
+                <!-- Teks Arab, Rumi & Maksud -->
                 <div class="flex flex-col items-center justify-center w-full mt-10 mb-6 z-10">
-                    <h2 class="arabic-font text-6xl sm:text-7xl text-white mb-4 leading-tight text-center drop-shadow-lg px-2" id="arabicText">
+                    <h2 class="arabic-font text-6xl sm:text-7xl text-white mb-4 leading-tight text-center drop-shadow-lg px-2" dir="rtl" id="arabicText">
                         اَللّٰهُ
                     </h2>
-                    
+
                     <div class="w-1/2 border-t border-teal-500/40 my-2.5"></div>
-                    
+
                     <h3 class="text-2xl sm:text-3xl font-bold text-yellow-300 tracking-wide text-center mb-1.5" id="rumiText">
                         Ya Allah
                     </h3>
-                    
+
                     <p class="text-lg sm:text-xl font-medium text-teal-100 text-center leading-snug px-2" id="meaningText">
                         Tuhan Yang Maha Esa
                     </p>
                 </div>
 
-                <!-- Action Pills (Open Mobile Bottom Sheet) -->
+                <!-- Butang Tindakan (Buka Laci Bawah) -->
                 <div class="w-full grid grid-cols-2 gap-2.5 z-10 mt-auto">
                     <button onclick="toggleInfoPanel('penerangan')" id="btnPenerangan" class="text-xs sm:text-sm font-medium bg-teal-950/65 hover:bg-teal-800 active:scale-95 text-teal-100 px-3 py-3 rounded-2xl transition-all border border-teal-500/40 flex items-center justify-center gap-1.5 shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -165,7 +164,7 @@
         </p>
     </main>
 
-    <!-- Bottom Thumb-Friendly Navigation Dock -->
+    <!-- Bar Navigasi Bawah Mesra Ibu Jari -->
     <nav class="w-full max-w-md mx-auto px-4 pt-2 safe-bottom z-20 shrink-0">
         <div class="flex items-center gap-3 bg-slate-900/90 backdrop-blur-lg p-2 rounded-3xl border border-slate-800 shadow-2xl">
             <button onclick="prevName()" id="prevBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-semibold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-1.5 border border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed">
@@ -175,7 +174,7 @@
                 <span class="text-sm sm:text-base">Sebelum</span>
             </button>
 
-            <button onclick="playCurrentNameAudio()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-teal-300 p-3.5 rounded-2xl transition-all border border-teal-700/50 shrink-0" title="Sebut Nama" aria-label="Sebut Nama">
+            <button id="btnNavAudio" onclick="playCurrentNameAudio()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-teal-300 p-3.5 rounded-2xl transition-all border border-teal-700/50 shrink-0" title="Sebut Nama" aria-label="Sebut Nama">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                 </svg>
@@ -190,13 +189,13 @@
         </div>
     </nav>
 
-    <!-- Mobile Bottom Sheet for Dalil & Amalan Zikir -->
+    <!-- Laci Bawah (Bottom Sheet) untuk Dalil & Amalan Zikir -->
     <div id="infoSheetOverlay" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 flex items-end justify-center" onclick="if (event.target === this) closeAllInfoPanels()">
         <div id="infoSheet" class="sheet-panel translate-y-full w-full max-w-md bg-slate-900 border-t border-x border-slate-700/80 rounded-t-3xl p-5 safe-bottom shadow-2xl max-h-[80dvh] flex flex-col">
-            <!-- Drag Handle -->
+            <!-- Pemegang Laci -->
             <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-4 shrink-0"></div>
 
-            <!-- Sheet Header Tabs & Close -->
+            <!-- Tab Kepala & Butang Tutup -->
             <div class="flex items-center justify-between gap-2 mb-4 shrink-0">
                 <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700/70 flex-1">
                     <button id="tabPenerangan" onclick="toggleInfoPanel('penerangan')" class="flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300">
@@ -213,7 +212,7 @@
                 </button>
             </div>
 
-            <!-- Scrollable Sheet Content -->
+            <!-- Kandungan Boleh Tatal -->
             <div class="overflow-y-auto pr-1 flex-1">
                 <!-- Kotak Penerangan -->
                 <div id="peneranganBox" class="hidden text-teal-50 text-sm sm:text-base text-left">
@@ -244,9 +243,839 @@
         </div>
     </div>
 
-    <!-- Custom Reset Confirmation Modal (Replacing confirm()) -->
-<!-- ... existing code ... -->
-        // DOM Elements
+    <!-- Modal Pengesahan Mula Semula (Ganti confirm()) -->
+    <div id="resetModal" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick="if (event.target === this) closeResetModal()">
+        <div class="w-full max-w-xs bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-2xl bg-teal-950 border border-teal-700/60 text-teal-300 flex items-center justify-center mx-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">Mula Semula?</h3>
+            <p class="text-sm text-slate-400 mb-5">Kembali ke nama pertama (1. Ya Allah) untuk memulakan hafalan semula.</p>
+            <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="closeResetModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition-colors">
+                    Batal
+                </button>
+                <button onclick="confirmReset()" class="py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-colors">
+                    Ya, Mula
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifikasi Ringkas -->
+    <div id="toastNotice" class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-800/95 text-teal-100 text-xs font-medium px-4 py-2.5 rounded-full border border-teal-500/40 shadow-xl backdrop-blur-md">
+    </div>
+
+    <script>
+        // Data Lengkap 99 Nama Allah (Berbaris Penuh untuk Sebutan Arab Fusha, Dalil Sahih & Amalan Zikir)
+        const asmaulHusna = [
+            {
+                id: 1,
+                arabic: "اَللّٰهُ",
+                rumi: "Ya Allah",
+                meaning: "Tuhan Yang Maha Esa",
+                penerangan: "Lafaz Jalalah (Nama Agung) yang merangkumi segala sifat kesempurnaan dan hanya layak disembah. Firman Allah SWT: \"Katakanlah (wahai Muhammad): Tuhanku ialah Allah Yang Maha Esa.\" (Surah Al-Ikhlas 112:1).",
+                amalan: "Apabila dizikirkan 500 kali setiap malam, lebih-lebih lagi selepas solat tahajjud atau solat sunat 2 rakaat mempunyai pengaruh yang besar di dalam mencapai segala yang dihajati."
+            },
+            {
+                id: 2,
+                arabic: "اَلرَّحْمٰنُ",
+                rumi: "Ya Rahman",
+                meaning: "Maha Pemurah",
+                penerangan: "Allah melimpahkan rahmat dan nikmat-Nya kepada seluruh makhluk di dunia tanpa terkecuali. Dalil: \"Yang Maha Pemurah, lagi Maha Mengasihani.\" (Surah Al-Fatihah 1:3).",
+                amalan: "Apabila dizikirkan sesudah solat 5 waktu sebanyak 500 kali, maka hati kita akan menjadi terang, tenang & sifat-sifat pelupa & gugup akan hilang dengan izin Allah."
+            },
+            {
+                id: 3,
+                arabic: "اَلرَّحِيْمُ",
+                rumi: "Ya Rahim",
+                meaning: "Maha Penyayang",
+                penerangan: "Allah mengurniakan kasih sayang yang khusus buat hamba-hamba-Nya yang beriman di dunia dan akhirat. Dalil: \"Dan adalah Ia sentiasa Melimpah-limpah rahmat-Nya kepada orang-orang yang beriman.\" (Surah Al-Ahzab 33:43).",
+                amalan: "Apabila dizikirkan sebanyak 100 kali setiap hari, Insya Allah kita akan mempunyai daya penarik yang besar sekali hingga manusia merasa cinta & kasih serta sayang terhadap kita."
+            },
+            {
+                id: 4,
+                arabic: "اَلْمَلِكُ",
+                rumi: "Ya Malik",
+                meaning: "Maha Merajai / Pemerintah",
+                penerangan: "Allah adalah Penguasa mutlak seluruh alam semesta yang tidak memerlukan sesuatu pun daripada makhluk-Nya. Dalil: \"Dialah Allah, yang tidak ada Tuhan selain Dia, Yang Menguasai (sekalian alam).\" (Surah Al-Hashr 59:23).",
+                amalan: "Apabila dizikirkan sebanyak 121 kali setiap pagi atau setelah tergelincirnya matahari, segala perkerjaan yang dilakukan setiap hari akan mendatangkan berkat & kekayaan yang diredhai Allah."
+            },
+            {
+                id: 5,
+                arabic: "اَلْقُدُّوْسُ",
+                rumi: "Ya Quddus",
+                meaning: "Maha Suci",
+                penerangan: "Allah Maha Suci daripada sebarang sifat kekurangan, kelemahan, dan penyerupaan dengan makhluk. Dalil: \"Yang Maha Suci, Yang Maha Selamat Sejahtera...\" (Surah Al-Hashr 59:23).",
+                amalan: "Apabila dizikirkan sebanyak 100 kali setiap pagi setelah tergelincir matahari, maka hati kita akan terjaga dari semua penyakit hati seperti sombong, iri hati, dengki dan lain-lain."
+            },
+            {
+                id: 6,
+                arabic: "اَلسَّلَامُ",
+                rumi: "Ya Salam",
+                meaning: "Maha Penyelamat / Sejahtera",
+                penerangan: "Allah adalah sumber segala kesejahteraan dan keselamatan bagi hamba-hamba-Nya di dunia dan di akhirat. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 136 kali, Insya Allah jasmani & rohani kita akan terhindar dari segala penyakit sehingga badan menjadi segar sihat & sejahtera."
+            },
+            {
+                id: 7,
+                arabic: "اَلْمُؤْمِنُ",
+                rumi: "Ya Mukmin",
+                meaning: "Maha Pengaman",
+                penerangan: "Allah memberikan rasa aman kepada hamba-Nya yang beriman dan membenarkan risalah para rasul-Nya dengan mukjizat. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 236 kali, Insya Allah diri kita, keluarga & segala kekayaan yang dimiliki akan terpelihara & aman dari segala macam gangguan yang merosakkan."
+            },
+            {
+                id: 8,
+                arabic: "اَلْمُهَيْمِنُ",
+                rumi: "Ya Muhaimin",
+                meaning: "Maha Pelindung / Penjaga",
+                penerangan: "Allah Maha Mengawasi, Memelihara, dan Mengetahui segala perkataan serta perbuatan makhluk-Nya. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 145 kali sesudah solat fardhu Isyak, Insya Allah fikiran & hati kita akan menjadi terang & bersih."
+            },
+            {
+                id: 9,
+                arabic: "اَلْعَزِيْزُ",
+                rumi: "Ya ‘Aziz",
+                meaning: "Maha Mulia / Perkasa",
+                penerangan: "Allah Maha Perkasa lagi tidak dapat dikalahkan oleh sesiapa pun di langit dan di bumi. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 40 kali sesudah solat subuh, Insya Allah, kita akan menjadi orang yang mulia, disegani orang kerana penuh kewibawaan."
+            },
+            {
+                id: 10,
+                arabic: "اَلْجَبَّارُ",
+                rumi: "Ya Jabbar",
+                meaning: "Maha Pemaksa / Perkasa",
+                penerangan: "Kehendak Allah pasti berlaku dan Dia juga yang memulihkan hati hamba-Nya yang remuk. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 226 kali pagi & petang, semua musuh akan menjadi tunduk & patuh dengan izin Allah."
+            },
+            {
+                id: 11,
+                arabic: "اَلْمُتَكَبِّرُ",
+                rumi: "Ya Mutakabbir",
+                meaning: "Maha Besar / Megah",
+                penerangan: "Hanya Allah yang berhak memiliki segala kebesaran dan keagungan mutlak, dan Maha Suci daripada sifat zalim. Dalil: Surah Al-Hashr (59:23).",
+                amalan: "Apabila dizikirkan sebanyak 662 kali, maka dengan kebijaksanaan bertindak, kita akan dapat menundukkan semua musuh, bahkan mereka akan menjadi pembantu yang setia."
+            },
+            {
+                id: 12,
+                arabic: "اَلْخَالِقُ",
+                rumi: "Ya Khaliq",
+                meaning: "Maha Pencipta",
+                penerangan: "Allah yang menciptakan seluruh alam daripada tiada kepada ada menurut ukuran dan ketetapan-Nya. Dalil: \"Dialah Allah, Yang Menciptakan sekalian makhluk...\" (Surah Al-Hashr 59:24).",
+                amalan: "Dibaca mengikut kemampuan atau sebanyak 731 kali, Insya Allah yang ingin otak cerdas, cepat menerima sesuatu pelajaran, amalan ini akan memberikan otak kita cerdas dan cepat faham."
+            },
+            {
+                id: 13,
+                arabic: "اَلْبَارِئُ",
+                rumi: "Ya Baarii’",
+                meaning: "Maha Perancang / Mengadakan",
+                penerangan: "Allah yang mengadakan dan menyempurnakan setiap ciptaan dengan teratur tanpa sebarang kecacatan. Dalil: Surah Al-Hashr (59:24).",
+                amalan: "Sekiranya kita berada di dalam kesukaran atau sedang sakit, dibaca sebanyak 100 kali selama 7 hari berturut-turut, Insya Allah kita akan terlepas dari kesukaran & sembuh dari penyakit tersebut."
+            },
+            {
+                id: 14,
+                arabic: "اَلْمُصَوِّرُ",
+                rumi: "Ya Musawwir",
+                meaning: "Maha Menjadikan Rupa Bentuk",
+                penerangan: "Allah yang membentuk rupa setiap makhluk dengan kepelbagaian dan keunikan tersendiri. Dalil: Surah Al-Hashr (59:24).",
+                amalan: "Sekiranya seorang isteri yang sudah lama belum mempunyai anak, maka cubalah ikhtiar ini dengan berpuasa selama 7 hari dari hari Ahad hingga Sabtu. Di waktu hendak berbuka puasa, ambil segelas air & dibacakan ‘Ya Musawwir’ sebanyak 21 kali, kemudian diminum air tersebut untuk berbuka puasa.\nBagi sang suami, hendaklah berbuat perkara yang sama tetapi hanya dengan berpuasa selama 3 hari. Kemudian pada waktu hendak berjimak, bacalah zikir ini sebanyak 10 kali, Insya Allah akan dikurniakan anak yang soleh."
+            },
+            {
+                id: 15,
+                arabic: "اَلْغَفَّارُ",
+                rumi: "Ya Ghaffar",
+                meaning: "Maha Pengampun",
+                penerangan: "Allah sentiasa menutupi aib dan mengampuni dosa hamba-Nya yang bertaubat berulang kali. Dalil: \"Sesungguhnya Dia Maha Pengampun.\" (Surah Nuh 71:10).",
+                amalan: "Sambil beriktikaf (diam dalam masjid dalam keadaan suci) bacalah zikir ini sebanyak 100 kali sambil menunggu masuknya waktu solat Jumaat, Insya Allah akan diampunkan dosa-dosa kita."
+            },
+            {
+                id: 16,
+                arabic: "اَلْقَهَّارُ",
+                rumi: "Ya Qahhaar",
+                meaning: "Maha Menundukkan",
+                penerangan: "Segala makhluk di langit dan di bumi tunduk di bawah kekuasaan dan ketetapan Allah. Dalil: \"Dan Dialah Yang Maha Esa, lagi Maha Kuasa (Menundukkan).\" (Surah Ar-Ra'd 13:16).",
+                amalan: "Dizikir menurut kemampuan atau sebanyak 306 kali, maka hati kita akan dijaga dari ketamakkan & kemewahan dunia."
+            },
+            {
+                id: 17,
+                arabic: "اَلْوَهَّابُ",
+                rumi: "Ya Wahhab",
+                meaning: "Maha Pemberi",
+                penerangan: "Allah memberi kurnia dan nikmat tanpa batas serta tanpa mengharapkan balasan daripada makhluk. Dalil: \"Sesungguhnya Engkaulah jua Yang Maha Pemberi.\" (Surah Ali Imran 3:8).",
+                amalan: "Dizikir sebanyak 100 kali sesudah solat fardhu, barang siapa yang selalu di dalam kesempitan, Insya Allah segala kesulitan atau kesempitan dalam soal apa pun akan hilang."
+            },
+            {
+                id: 18,
+                arabic: "اَلرَّزَّاقُ",
+                rumi: "Ya Razzaq",
+                meaning: "Maha Pemberi Rezeki",
+                penerangan: "Allah yang menjamin dan mengurniakan rezeki zahir serta batin kepada seluruh makhluk-Nya. Dalil: \"Sesungguhnya Allah Dialah sahaja Yang Memberi rezeki.\" (Surah Adz-Dzariyat 51:58).",
+                amalan: "Dizikir mengikut kemampuan sesudah solat fardhu khususnya solat subuh, Insya Allah akan dipermudahkan rezeki yang halal dan membawa berkat. Rezeki akan datang tanpa diduga tetapi perlulah dilakukan dengan ikhtiar yang zahir."
+            },
+            {
+                id: 19,
+                arabic: "اَلْفَتَّاحُ",
+                rumi: "Ya Fattah",
+                meaning: "Maha Pembuka",
+                penerangan: "Allah yang membuka pintu rahmat, ilmu, rezeki, dan memberi keputusan yang seadil-adilnya. Dalil: \"Dan Dialah jua sebaik-baik Hakim (Pembuka kebenaran), lagi Maha Mengetahui.\" (Surah Saba' 34:26).",
+                amalan: "Dizikir sebanyak 71 kali sesudah selesai solat subuh, Insya Allah hati kita akan dibuka oleh Allah, sehingga mudah menerima nasihat agama."
+            },
+            {
+                id: 20,
+                arabic: "اَلْعَلِيْمُ",
+                rumi: "Ya ‘Alim",
+                meaning: "Maha Mengetahui",
+                penerangan: "Ilmu Allah meliputi segala sesuatu yang nyata dan ghaib, yang telah berlaku dan yang akan datang. Dalil: \"Dan Allah Maha Mengetahui akan tiap-tiap sesuatu.\" (Surah Al-Baqarah 2:282).",
+                amalan: "Dizikir sebanyak 100 kali setiap kali selesai solat Maktubah, Insya Allah akan mendapat kemakrifatan yang sempurna."
+            },
+            {
+                id: 21,
+                arabic: "اَلْقَابِضُ",
+                rumi: "Ya Qaabidhu",
+                meaning: "Maha Penyempit Hidup",
+                penerangan: "Allah menyempitkan rezeki atau mencabut nyawa sesiapa yang dikehendaki-Nya dengan penuh hikmah. Dalil: \"Dan Allah jualah yang menyempit dan melapangkan (rezeki).\" (Surah Al-Baqarah 2:245).",
+                amalan: "Dizikirkan 100 kali setiap hari, maka dirinya akan semakin dekat dengan Allah dan terlepas dari segala bentuk ancaman."
+            },
+            {
+                id: 22,
+                arabic: "اَلْبَاسِطُ",
+                rumi: "Ya Baasithu",
+                meaning: "Maha Pelapang Hidup",
+                penerangan: "Allah melapangkan rezeki, rahmat, dan kelapangan dada kepada hamba-hamba yang dikehendaki-Nya. Dalil: Surah Al-Baqarah (2:245).",
+                amalan: "Bagi mereka yang berniaga atau mempunyai usaha-usaha lain, kuatkanlah usaha & berniaga itu dengan memperbanyakkan membaca zikir ini setiap hari, Insya Allah rezeki akan menjadi murah."
+            },
+            {
+                id: 23,
+                arabic: "اَلْخَافِضُ",
+                rumi: "Ya Khaa’fidh",
+                meaning: "Maha Merendahkan",
+                penerangan: "Allah merendahkan darjat orang-orang yang sombong, zalim, dan mengingkari kebenaran. Dalil: \"(Kejadian hari kiamat itu) merendahkan (satu golongan) dan meninggikan (golongan yang lain).\" (Surah Al-Waqi'ah 56:3).",
+                amalan: "Dizikirkan sebanyak 500 kali setiap hari, dalam keadaan suci, khusyuk & tawaduk, Insya Allah segala maksud akan ditunaikan Allah. Juga apabila mempunyai musuh, musuh itu akan jatuh martabatnya."
+            },
+            {
+                id: 24,
+                arabic: "اَلرَّافِعُ",
+                rumi: "Ya Raafi",
+                meaning: "Maha Meninggikan",
+                penerangan: "Allah mengangkat darjat orang-orang yang beriman dan berilmu pengetahuan. Dalil: \"Allah meninggikan darjat orang-orang yang beriman di antara kamu.\" (Surah Al-Mujadilah 58:11).",
+                amalan: "Dizikirkan setiap hari, baik siang atau malam sebanyak 70 kali, Insya Allah keselamatan harta benda di rumah, di kedai atau di tempat-tempat lain akan selamat dan terhindar dari kecurian."
+            },
+            {
+                id: 25,
+                arabic: "اَلْمُعِزُّ",
+                rumi: "Ya Mu’izz",
+                meaning: "Maha Pemberi Kemuliaan",
+                penerangan: "Allah mengurniakan kemuliaan dan kemenangan kepada sesiapa yang dikehendaki-Nya. Dalil: \"Engkau memuliakan sesiapa yang Engkau kehendaki.\" (Surah Ali Imran 3:26).",
+                amalan: "Dizikirkan sebanyak 140 kali setiap hari, Insya Allah akan memperolehi kewibawaan yang besar terutama ketua-ketua jabatan atau perniagaan."
+            },
+            {
+                id: 26,
+                arabic: "اَلْمُذِلُّ",
+                rumi: "Ya Muzill",
+                meaning: "Maha Menghinakan",
+                penerangan: "Allah berkuasa menghinakan sesiapa yang angkuh dan berpaling daripada petunjuk-Nya. Dalil: \"Dan Engkau menghinakan sesiapa yang Engkau kehendaki.\" (Surah Ali Imran 3:26).",
+                amalan: "Perbanyakkanlah zikir ini setiap hari, sekiranya ada orang berhutang kepada kita dan sukar untuk memintanya, Insya Allah si penghutang akan sedar & membayar hutangnya kembali."
+            },
+            {
+                id: 27,
+                arabic: "اَلسَّمِيْعُ",
+                rumi: "Ya Samii’",
+                meaning: "Maha Mendengar",
+                penerangan: "Allah mendengar segala bisikan hati, doa, dan suara makhluk-Nya tanpa batas. Dalil: \"Sesungguhnya Allah Maha Mendengar, lagi Maha Mengetahui.\" (Surah Al-Baqarah 2:181).",
+                amalan: "Sekiranya inginkan doa kita makbul dan pendengaran telinga kita tajam, biasakanlah zikir ini setiap hari menurut kemampuan, lebih-lebih lagi sesudah solat Dhuha, Insya Allah doa akan mustajab."
+            },
+            {
+                id: 28,
+                arabic: "اَلْبَصِيْرُ",
+                rumi: "Ya Bashiir",
+                meaning: "Maha Melihat",
+                penerangan: "Penglihatan Allah meliputi segala sesuatu yang zahir mahupun yang tersembunyi di sebalik kegelapan. Dalil: \"Dan Allah Maha Melihat akan apa yang kamu kerjakan.\" (Surah Al-Hujurat 49:18).",
+                amalan: "Dizikirkan sebanyak 100 kali sebelum solat Jumaat, Insya Allah akan menjadikan kita terang hati, cerdas otak dan selalu diberikan taufik & hidayah dari Allah."
+            },
+            {
+                id: 29,
+                arabic: "اَلْحَكَمُ",
+                rumi: "Ya Hakam",
+                meaning: "Maha Menghukum / Menetapkan",
+                penerangan: "Allah adalah Hakim yang paling adil dan tiada siapa mampu menolak ketetapan hukum-Nya. Dalil: \"Maka patutkah aku mencari hakim selain daripada Allah?\" (Surah Al-An'am 6:114).",
+                amalan: "Dizikirkan sebanyak 68 kali pada tengah malam dalam keadaan suci, Insya Allah dapat membuka hati seseorang itu mudah menerima ilmu-ilmu agama dan membantu kecepatan mempelajari ilmu-ilmu agama."
+            },
+            {
+                id: 30,
+                arabic: "اَلْعَدْلُ",
+                rumi: "Ya Adllu",
+                meaning: "Maha Adil",
+                penerangan: "Allah Maha Adil dalam segala ketetapan dan pembalasan-Nya serta tidak pernah menzalimi hamba-Nya walau sedikit. Dalil: \"Telah sempurnalah kalimah Tuhanmu dengan benar dan adil.\" (Surah Al-An'am 6:115).",
+                amalan: "Dizikirkan sebanyak 104 kali setiap hari sesudah selesai solat 5 waktu, Insya Allah diri kita selalu dapat berlaku adil."
+            },
+            {
+                id: 31,
+                arabic: "اَللَّطِيْفُ",
+                rumi: "Ya Lathiif",
+                meaning: "Maha Halus / Lembut",
+                penerangan: "Allah Maha Lembut terhadap hamba-Nya dan mengetahui perkara yang paling halus lagi tersembunyi. Dalil: \"Allah Maha Lembut tadbir-Nya kepada hamba-hamba-Nya.\" (Surah Asy-Syura 42:19).",
+                amalan: "Dengan memperbanyakkan zikir ini mengikut kemampuan, Insya Allah bagi para peniaga, ikhtiar ini akan menjadikan barangan jualannya menjadi laris & maju."
+            },
+            {
+                id: 32,
+                arabic: "اَلْخَبِيْرُ",
+                rumi: "Ya Khabiir",
+                meaning: "Maha Waspada / Mengetahui Rahsia",
+                penerangan: "Allah Maha Mengetahui secara mendalam tentang hakikat batin dan rahsia setiap makhluk. Dalil: \"Dan Dialah Yang Maha Bijaksana, lagi Maha Mendalam pengetahuan-Nya.\" (Surah Al-An'am 6:18).",
+                amalan: "Dengan memperbanyakkan zikir ini setiap hari, terkandung faedah yang teramat banyak sekali sesuai dengan maksud zikir ini antara lain faedahnya ialah dapat bertemu dengan teman atau anak yang telah terpisah sekian lama."
+            },
+            {
+                id: 33,
+                arabic: "اَلْحَلِيْمُ",
+                rumi: "Ya Haliim",
+                meaning: "Maha Penyantun",
+                penerangan: "Allah tidak tergesa-gesa menurunkan azab kepada hamba yang berdosa, malah memberi peluang untuk bertaubat. Dalil: \"Dan Allah Maha Mengetahui, lagi Maha Penyantun.\" (Surah An-Nisa' 4:12).",
+                amalan: "Dizikirkan sebanyak 88 kali selepas solat lima waktu, bagi mereka yang mempunyai kedudukan di dalam pemerintahan, syarikat atau apa saja, Insya Allah dipastikan kedudukannya tidak akan dicabar atau diungkit-ungkit atau tergugat."
+            },
+            {
+                id: 34,
+                arabic: "اَلْعَظِيْمُ",
+                rumi: "Ya ‘Aziim",
+                meaning: "Maha Agung",
+                penerangan: "Keagungan zat, sifat, dan kekuasaan Allah melampaui segala yang dapat dibayangkan oleh akal manusia. Dalil: \"Dan Dialah Yang Maha Tinggi, lagi Maha Besar (Agung).\" (Surah Al-Baqarah 2:255).",
+                amalan: "Dizikirkan sebanyak 12 kali setiap hari untuk orang yang sekian lama menderitai sakit, Insya Allah akan sembuh. Juga apabila dibaca 12 kali kemudian ditiupkan pada tangan lalu diusap-usap pada seluruh badan, maka dengan izin Allah akan terhindar dari gangguan jin, syaitan dan sebagainya."
+            },
+            {
+                id: 35,
+                arabic: "اَلْغَفُوْرُ",
+                rumi: "Ya Ghafuur",
+                meaning: "Maha Pengampun",
+                penerangan: "Keampunan Allah amat luas buat sesiapa sahaja yang memohon ampun dengan hati yang ikhlas. Dalil: \"Sesungguhnya Allah Maha Pengampun, lagi Maha Mengasihani.\" (Surah Az-Zumar 39:53).",
+                amalan: "Bagi orang yang bertaubat, hendaklah memperbanyakkan zikir ini dengan mengakui dosa-dosa dan beriktikad untuk tidak mengulanginya, Insya Allah akan diterima taubatnya oleh Allah."
+            },
+            {
+                id: 36,
+                arabic: "اَلشَّكُوْرُ",
+                rumi: "Ya Syakuur",
+                meaning: "Maha Mensyukuri / Menghargai",
+                penerangan: "Allah sangat menghargai amal kebaikan hamba-Nya walau sekecil zarah dan menggandakan pahalanya. Dalil: \"Sesungguhnya Tuhan kami Maha Pengampun, lagi Maha Mensyukuri.\" (Surah Fatir 35:34).",
+                amalan: "Dizikirkan sebanyak 40 kali sehabis solat hajat, sebagai pengucapan terima kasih kepada Allah, Insya Allah semua hajat kita akan dimakbulkan Allah. Lakukanlah setiap kali kita mempunyai hajat yang penting & terdesak."
+            },
+            {
+                id: 37,
+                arabic: "اَلْعَلِيُّ",
+                rumi: "Ya ‘Aliy",
+                meaning: "Maha Tinggi Martabat-Nya",
+                penerangan: "Allah Maha Tinggi kedudukan, kemuliaan, dan kekuasaan-Nya di atas segala makhluk. Dalil: Surah Al-Baqarah (2:255).",
+                amalan: "Untuk mencerdaskan otak anak kita yang bebal, tulislah zikir ini sebanyak 110 kali (di dalam bahasa Arab) lalu direndam pada air yang dingin & diberikan si anak meminumnya, Insya Allah lama kelamaan otak si anak itu akan berubah cemerlang. Insya Allah mujarab."
+            },
+            {
+                id: 38,
+                arabic: "اَلْكَبِيْرُ",
+                rumi: "Ya Kabiir",
+                meaning: "Maha Besar",
+                penerangan: "Allah Maha Besar melebihi segala sesuatu dan hanya Dia yang layak dibesarkan. Dalil: \"Yang Maha Tinggi, lagi Maha Besar.\" (Surah Al-Hajj 22:62).",
+                amalan: "Bagi seseorang yang kedudukannya telah dirampas atau dilucut gara-gara sesuatu fitnah, maka bacalah zikir ini sebanyak 1,000 kali selama 7 hari berturut-turut dalam keadaan suci sebagai pengaduan kepada Allah. Lakukanlah sesudah solat malam (tahajud atau hajat)."
+            },
+            {
+                id: 39,
+                arabic: "اَلْحَفِيْظُ",
+                rumi: "Ya Hafiiz",
+                meaning: "Maha Pelindung / Pemelihara",
+                penerangan: "Allah memelihara seluruh langit dan bumi serta menjaga amalan hamba-Nya tanpa sebarang keletihan. Dalil: \"Sesungguhnya Tuhanku Maha Pemelihara akan tiap-tiap sesuatu.\" (Surah Hud 11:57).",
+                amalan: "Dizikir sebanyak 99 kali, Insya Allah diri kita akan terlindung dari gangguan binatang buas terutamanya apabila kita berada di dalam hutan."
+            },
+            {
+                id: 40,
+                arabic: "اَلْمُقِيْتُ",
+                rumi: "Ya Muqiit",
+                meaning: "Maha Pemberi Keperluan",
+                penerangan: "Allah yang menyediakan keperluan hidup, makanan, dan kekuatan bagi setiap makhluk. Dalil: \"Dan Allah Maha Kuasa (serta mencukupkan keperluan) atas tiap-tiap sesuatu.\" (Surah An-Nisa' 4:85).",
+                amalan: "Sekiranya kita berada di dalam kelaparan seperti ketika sesat di dalam hutan atau di mana sahaja sehingga sukar untuk mendapatkan bekalan makanan, maka perbanyakkan zikir ini. Insya Allah badan kita akan menjadi kuat & segar kerana rasa lapar akan hilang."
+            },
+            {
+                id: 41,
+                arabic: "اَلْحَسِيْبُ",
+                rumi: "Ya Hasiib",
+                meaning: "Maha Mencukupi / Menghitung",
+                penerangan: "Allah mencukupkan segala keperluan hamba yang bertawakal dan menghitung segala amalan dengan teliti. Dalil: \"Dan cukuplah Allah menjadi Penghitung (segala amalan).\" (Surah An-Nisa' 4:6).",
+                amalan: "Untuk memperteguhkan kedudukan yang telah kita jawat, amalkan zikir ini sebanyak 777 kali sebelum matahari terbit & selepas solat Maghrib, Insya Allah akan meneguhkan kedudukan kita tanpa sebarang gangguan."
+            },
+            {
+                id: 42,
+                arabic: "اَلْجَلِيْلُ",
+                rumi: "Ya Jaliil",
+                meaning: "Maha Luhur / Mulia",
+                penerangan: "Allah memiliki segala sifat keagungan, keluhuran, dan kesempurnaan. Dalil: \"Dan kekallah Zat Tuhanmu yang mempunyai Kebesaran dan Kemuliaan.\" (Surah Ar-Rahman 55:27).",
+                amalan: "Barangsiapa mengamalkan zikir ini pada sepertiga malam yang terakhir, Insya Allah kita akan mendapati perubahan yang mengkagumkan – perniagaan akan bertambah maju. Andai seorang pegawai, maka tanpa disedari kedudukan kita akan lebih tinggi dan terhormat & begitulah seterusnya dengan izin Allah."
+            },
+            {
+                id: 43,
+                arabic: "اَلْكَرِيْمُ",
+                rumi: "Ya Kariim",
+                meaning: "Maha Mulia / Pemurah",
+                penerangan: "Allah Maha Pemurah yang memberi tanpa diminta dan memuliakan hamba-hamba-Nya yang bertakwa. Dalil: \"Sesungguhnya Tuhanku Maha Kaya, lagi Maha Pemurah.\" (Surah An-Naml 27:40).",
+                amalan: "Untuk mencapai darjat yang tinggi & mulia di dunia mahupun di akhirat kelak, maka amalkan zikir ini sebanyak 280 kali ketika hendak masuk tidur. Nescaya Allah akan mengangkat darjat mereka yang mengamalkan zikir ini."
+            },
+            {
+                id: 44,
+                arabic: "اَلرَّقِيْبُ",
+                rumi: "Ya Raqiib",
+                meaning: "Maha Pengawas",
+                penerangan: "Allah sentiasa mengawasi segala gerak-geri, perkataan, dan lintasan hati setiap hamba. Dalil: \"Sesungguhnya Allah sentiasa Mengawasi kamu.\" (Surah An-Nisa' 4:1).",
+                amalan: "Bagi meminta pertolongan kepada Allah terhadap penjagaan barang yang dikhuatirkan, maka zikirkan sebanyak 50 kali setiap hari dengan niat agar barang-barang yang dikhuatirkan yang berada di tempat yang jauh & sukar dijaga terhindar dari sebarang kecurian mahupun gangguan lainnya. Bertawakkal dan yakinlah kepada Allah. Insya Allah."
+            },
+            {
+                id: 45,
+                arabic: "اَلْمُجِيْبُ",
+                rumi: "Ya Mujiib",
+                meaning: "Maha Mengabulkan",
+                penerangan: "Allah sentiasa dekat dan memperkenankan doa hamba-hamba-Nya yang memohon kepada-Nya. Dalil: \"Sesungguhnya Tuhanku sentiasa dekat, lagi sentiasa memperkenankan (doa).\" (Surah Hud 11:61).",
+                amalan: "Sesungguhnya Allah adalah Zat yang menerima doa hamba-Nya dan agar doa kita mustajab dan selalu diterima Allah, hendaklah mengamalkan zikir ini sebanyak 55 kali sesudah solat subuh. Insya Allah Tuhan akan mengabulkan doa kita."
+            },
+            {
+                id: 46,
+                arabic: "اَلْوَاسِعُ",
+                rumi: "Ya Waasi’",
+                meaning: "Maha Luas Pemberian-Nya",
+                penerangan: "Rahmat, ilmu, keampunan, dan kurniaan Allah amat luas tanpa sempadan. Dalil: \"Sesungguhnya Allah Maha Luas (rahmat dan kurnia-Nya), lagi Maha Mengetahui.\" (Surah Al-Baqarah 2:115).",
+                amalan: "Apabila di dalam kesulitan maka amalkan zikir ini sebanyak 128 kali setiap pagi & petang, Insya Allah segala kesulitan akan hilang berkat pertolongan Allah. Andai zikir ini sentiasa diamalkan, Insya Allah Tuhan akan menjaga kita dari hasad dengki sesama makhluk."
+            },
+            {
+                id: 47,
+                arabic: "اَلْحَكِيْمُ",
+                rumi: "Ya Hakiim",
+                meaning: "Maha Bijaksana",
+                penerangan: "Setiap penciptaan, syariat, dan takdir Allah mengandungi hikmah yang sempurna. Dalil: \"Sesungguhnya Engkaulah Yang Maha Mengetahui, lagi Maha Bijaksana.\" (Surah Al-Baqarah 2:32).",
+                amalan: "Bagi pelajar atau sesiapa sahaja yang memperbanyakkan zikir ini setiap hari, Insya Allah akalnya akan menjadi cerdas & lancar dalam menghafal & mengikuti pelajaran. Amalkanlah sekurang-kurangnya 300 kali setiap hari."
+            },
+            {
+                id: 48,
+                arabic: "اَلْوَدُوْدُ",
+                rumi: "Ya Waduud",
+                meaning: "Maha Pencinta",
+                penerangan: "Allah mencintai hamba-hamba-Nya yang soleh dan menanamkan rasa kasih sayang di dalam hati mereka. Dalil: \"Dan Dialah Yang Maha Pengampun, lagi Maha Pengasih (Pencinta).\" (Surah Al-Buruj 85:14).",
+                amalan: "Diamalkan zikir ini sebanyak 11,000 kali pada setiap malam. Insya Allah kita akan menjadi insan yang sentiasa bernasib baik, disayangi & rumahtangga kita akan sentiasa berada di dalam keadaan harmoni."
+            },
+            {
+                id: 49,
+                arabic: "اَلْمَجِيْدُ",
+                rumi: "Ya Majiid",
+                meaning: "Maha Mulia",
+                penerangan: "Allah memiliki kemuliaan dan keagungan yang paling tinggi serta terpuji dalam segala perbuatan-Nya. Dalil: \"Sesungguhnya Allah Maha Terpuji, lagi Maha Mulia.\" (Surah Hud 11:73).",
+                amalan: "Untuk ketenteraman keluarga di mana setiap anggota keluarga sentiasa menyayangi & menghormati & khasnya kita sebagai ketua keluarga, maka amalkan zikir ini sebanyak 99 kali, sesudah itu hembuskan kedua belah tapak tangan & usap ke seluruh muka. Insya Allah semua anggota keluarga kita akan menyayangi & menghormati kita sebagai ketua keluarga."
+            },
+            {
+                id: 50,
+                arabic: "اَلْبَاعِثُ",
+                rumi: "Ya Baa’its",
+                meaning: "Maha Membangkitkan",
+                penerangan: "Allah yang membangkitkan seluruh manusia daripada kubur pada Hari Kiamat serta mengutuskan para rasul. Dalil: \"Dan sesungguhnya Allah akan membangkitkan orang-orang yang di dalam kubur.\" (Surah Al-Hajj 22:7).",
+                amalan: "Zikirkan sebanyak 100 kali dengan meletakkan kedua tangan ke dada, Insya Allah akan memberi kelapangan dada dengan ilmu & hikmah."
+            },
+            {
+                id: 51,
+                arabic: "اَلشَّهِيْدُ",
+                rumi: "Ya Syahiid",
+                meaning: "Maha Menyaksikan",
+                penerangan: "Tiada sesuatu pun yang terlepas daripada penyaksian dan pengetahuan Allah di seluruh alam. Dalil: \"Sesungguhnya Allah Maha Menyaksikan akan tiap-tiap sesuatu.\" (Surah Al-Hajj 22:17).",
+                amalan: "Apabila ada di kalangan anggota keluarga kita yang suka membangkang dan sebagainya, maka zikirkan sebanyak 319 kali secara berterusan setiap malam sehingga si pembangkang akan sedar & berubah perangainya."
+            },
+            {
+                id: 52,
+                arabic: "اَلْحَقُّ",
+                rumi: "Ya Haq",
+                meaning: "Maha Benar",
+                penerangan: "Kewujudan, firman, dan janji Allah adalah kebenaran mutlak yang tidak dapat disangkal. Dalil: \"Yang demikian itu kerana sesungguhnya Allah Dialah Yang Maha Benar.\" (Surah Al-Hajj 22:62).",
+                amalan: "Perbanyakkan zikir ini, Insya Allah ianya sangat berfaedah sekali untuk menebalkan iman & taat di dalam menjalankan perintah Allah."
+            },
+            {
+                id: 53,
+                arabic: "اَلْوَكِيْلُ",
+                rumi: "Ya Wakiil",
+                meaning: "Maha Mentadbir / Tempat Berserah",
+                penerangan: "Allah adalah sebaik-baik Pelindung dan tempat menyerahkan segala urusan bagi orang yang bertawakal. Dalil: \"Cukuplah Allah menjadi Penolong kami dan Dialah sebaik-baik Pengurus.\" (Surah Ali Imran 3:173).",
+                amalan: "Sekiranya terjadi hujan yang disertai ribut yang kuat, atau terjadi gempa, maka ketika itu perbanyakkan zikir ini, Insya Allah bencana tersebut akan menjadi reda & kembali seperti sediakala."
+            },
+            {
+                id: 54,
+                arabic: "اَلْقَوِيُّ",
+                rumi: "Ya Qawiy",
+                meaning: "Maha Memiliki Kekuatan",
+                penerangan: "Kekuatan Allah adalah mutlak, sempurna, dan tidak pernah berkurangan. Dalil: \"Sesungguhnya Allah Maha Kuat, lagi Maha Kuasa.\" (Surah Al-Hajj 22:40).",
+                amalan: "Diamalkan zikir ini sebanyak mungkin agar kita tidak gentar apabila berdepan dengan sebarang keadaan mahupun berdepan dengan si zalim."
+            },
+            {
+                id: 55,
+                arabic: "اَلْمَتِيْنُ",
+                rumi: "Ya Matiin",
+                meaning: "Maha Sempurna Kekuatan-Nya",
+                penerangan: "Kekuasaan dan kekuatan Allah sangat teguh dan tidak pernah ditimpa sebarang kelemahan. Dalil: \"Sesungguhnya Allah Dialah sahaja Yang Memberi rezeki, Yang Mempunyai Kekuasaan yang sangat teguh.\" (Surah Adz-Dzariyat 51:58).",
+                amalan: "Diamalkanlah zikir ini sebanyak mungkin kerana ianya mempunyai fadhilat yang besar sekali, antaranya untuk mengembalikan kekuatan sehingga musuh merasa gentar untuk mengganggu."
+            },
+            {
+                id: 56,
+                arabic: "اَلْوَلِيُّ",
+                rumi: "Ya Waliy",
+                meaning: "Maha Melindungi",
+                penerangan: "Allah menjadi Pelindung dan Penolong bagi hamba-hamba-Nya yang beriman dan bertakwa. Dalil: \"Dan Dialah Yang Maha Melindungi, lagi Maha Terpuji.\" (Surah Asy-Syura 42:28).",
+                amalan: "Barangsiapa yang menjawat sebarang jawatan atau kedudukan, maka amatlah elok sekali mengamalkan zikir ini sebanyak mungkin kerana dengan izin-Nya, kedudukan kita akan kukuh & terhindar dari sebarang gangguan oleh orang-orang yang bersifat dengki."
+            },
+            {
+                id: 57,
+                arabic: "اَلْحَمِيْدُ",
+                rumi: "Ya Hamiid",
+                meaning: "Maha Terpuji",
+                penerangan: "Allah sentiasa terpuji dengan segala nikmat, sifat kesempurnaan, dan keadilan-Nya. Dalil: \"Sesungguhnya Allah Maha Kaya, lagi Maha Terpuji.\" (Surah Luqman 31:26).",
+                amalan: "Perbanyakkan zikir ini sebagai pengakuan bahawa hanya Allah sahaja yang paling berhak menerima segala pujian."
+            },
+            {
+                id: 58,
+                arabic: "اَلْمُحْصِيْ",
+                rumi: "Ya Muhshiy",
+                meaning: "Maha Menghitung",
+                penerangan: "Allah menghitung dan mencatat setiap perkara di alam semesta dengan tepat tanpa satu pun yang terlepas. Dalil: \"Dan Dia menghitung tiap-tiap sesuatu satu persatu.\" (Surah Al-Jinn 72:28).",
+                amalan: "Sekiranya kita inginkan diri kita digolongkan dalam pertolongan yang selalu dekat dengan Allah (muraqabah), maka amalkan zikir ini sebanyak mungkin sesudah solat 5 waktu."
+            },
+            {
+                id: 59,
+                arabic: "اَلْمُبْدِئُ",
+                rumi: "Ya Mubdi’",
+                meaning: "Maha Memulai / Pemula",
+                penerangan: "Allah yang memulakan penciptaan segala makhluk tanpa contoh sebelumnya. Dalil: \"Sesungguhnya Dialah yang memulakan (penciptaan) dan yang mengembalikannya.\" (Surah Al-Buruj 85:13).",
+                amalan: "Agar segala apa yang kita rancangkan akan berhasil, maka zikirkan sebanyak 470 kali setiap hari. Insya Allah."
+            },
+            {
+                id: 60,
+                arabic: "اَلْمُعِيْدُ",
+                rumi: "Ya Mu’id",
+                meaning: "Maha Mengembalikan",
+                penerangan: "Allah yang mengembalikan kehidupan makhluk selepas kematian untuk dihisab pada Hari Akhirat. Dalil: Surah Al-Buruj (85:13).",
+                amalan: "Andai ada anggota keluarga yang menghilangkan diri dan sebagainya, amalkan zikir ini sebanyak 124 kali setiap hari sesudah solat. Insya Allah dipertunjukkan akan hasilnya."
+            },
+            {
+                id: 61,
+                arabic: "اَلْمُحْيِيْ",
+                rumi: "Ya Muhyiy",
+                meaning: "Maha Menghidupkan",
+                penerangan: "Allah yang mengurniakan nyawa kepada makhluk dan menghidupkan bumi yang tandus dengan hujan. Dalil: \"Sesungguhnya Dialah yang menghidupkan orang-orang yang telah mati.\" (Surah Ar-Rum 30:50).",
+                amalan: "Amalkan zikir ini sebanyak 58 kali setiap hari, Insya Allah kita akan diberikan kemuliaan darjat dunia & akhirat kelak."
+            },
+            {
+                id: 62,
+                arabic: "اَلْمُمِيْتُ",
+                rumi: "Ya Mumiit",
+                meaning: "Maha Mematikan",
+                penerangan: "Hanya Allah yang berkuasa menentukan ajal dan mematikan setiap yang bernyawa. Dalil: \"Dialah yang menghidupkan dan yang mematikan.\" (Surah Al-Hadid 57:2).",
+                amalan: "Barangsiapa memperbanyakkan zikir ini, Insya Allah akan dipermudahkan dalam perniagaan, berpolitik dan sebagainya."
+            },
+            {
+                id: 63,
+                arabic: "اَلْحَيُّ",
+                rumi: "Ya Hayyu",
+                meaning: "Maha Hidup",
+                penerangan: "Allah hidup kekal abadi dengan kehidupan yang sempurna tanpa permulaan dan tanpa pengakhiran. Dalil: \"Allah, tiada Tuhan melainkan Dia, Yang Tetap Hidup, Yang Kekal Mentadbir.\" (Surah Al-Baqarah 2:255).",
+                amalan: "Untuk mencapai kekuatan mental/batiniah di dalam menjalani kehidupan, perbanyakkanlah zikir ini."
+            },
+            {
+                id: 64,
+                arabic: "اَلْقَيُّوْمُ",
+                rumi: "Ya Qayyuum",
+                meaning: "Maha Berdiri Dengan Sendiri-Nya",
+                penerangan: "Allah berdiri sendiri tanpa memerlukan bantuan sesiapa, bahkan seluruh alam bergantung sepenuhnya kepada-Nya. Dalil: Surah Al-Baqarah (2:255).",
+                amalan: "Telah berkata Imam Ghazali bahawa barangsiapa yang ingin memperolehi harta yang banyak lagi berkat, ingin dikasihi oleh setiap manusia, ingin berwibawa, ditakuti musuh dan ingin menjadi insan yang terhormat, maka berzikirlah dengan “Ya Hayyu Ya Qayyuum” sebanyak 1,000 kali setiap malam atau siang hari. Hendaklah melakukannya secara berterusan, Insya Allah akan tercapai segala hajat."
+            },
+            {
+                id: 65,
+                arabic: "اَلْوَاجِدُ",
+                rumi: "Ya Waajid",
+                meaning: "Maha Menemukan / Kaya",
+                penerangan: "Allah Maha Kaya yang memiliki segala sesuatu dan tidak pernah kekurangan apa-apa pun. Dalil: \"Dan didapati-Nya engkau miskin, lalu Ia memberikan kekayaan.\" (Surah Ad-Dhuha 93:8).",
+                amalan: "Andai berkeinginan keperibadian yang kukuh, tidak mudah terpengaruh dan teguh pendirian, maka perbanyakkan zikir ini."
+            },
+            {
+                id: 66,
+                arabic: "اَلْمَاجِدُ",
+                rumi: "Ya Maajid",
+                meaning: "Maha Mulia",
+                penerangan: "Allah memiliki kemuliaan yang sempurna, ketinggian darjat, serta kemurahan yang tidak terhingga. Dalil: \"Yang Mempunyai Arasy, lagi Yang Maha Mulia.\" (Surah Al-Buruj 85:15).",
+                amalan: "Demi kecerdasan otak dan agar dipermudahkan hati untuk menerima pelajaran, maka hendaklah pelajar tersebut memperbanyakkan zikir ini setiap hari."
+            },
+            {
+                id: 67,
+                arabic: "اَلْوَاحِدُ",
+                rumi: "Ya Waahid",
+                meaning: "Maha Esa",
+                penerangan: "Allah Maha Esa pada zat, sifat, dan perbuatan-Nya; tiada sekutu bagi-Nya. Dalil: \"Dan Tuhan kamu ialah Tuhan Yang Maha Esa.\" (Surah Al-Baqarah 2:163).",
+                amalan: "Bagi pasangan yang belum mempunyai cahaya mata & tersangat ingin untuk menimangnya, amalkanlah zikir ini sebanyak 190 kali setiap kali selesai menunaikan solat 5 waktu selama satu bulan & selama itu juga hendaklah berpuasa sunat Isnin & Khamis, Insya Allah."
+            },
+            {
+                id: 68,
+                arabic: "اَلصَّمَدُ",
+                rumi: "Ya Somad",
+                meaning: "Maha Diminta / Tempat Bergantung",
+                penerangan: "Allah adalah tempat bergantung segala makhluk untuk memohon segala hajat dan keperluan. Dalil: \"Allah Yang menjadi tumpuan sekalian makhluk untuk memohon sebarang hajat.\" (Surah Al-Ikhlas 112:2).",
+                amalan: "Ketika dalam kelaparan akibat sesat atau kesempitan hidup, maka pohonlah kepada Allah dengan zikir ini sebanyak mungkin. Insya Allah, diri akan berasa segar dan sentiasa bertenaga."
+            },
+            {
+                id: 69,
+                arabic: "اَلْقَادِرُ",
+                rumi: "Ya Qaadir",
+                meaning: "Maha Kuasa",
+                penerangan: "Allah Maha Berkuasa melakukan apa sahaja yang dikehendaki-Nya tanpa sebarang halangan. Dalil: \"Katakanlah: Dialah yang berkuasa...\" (Surah Al-An'am 6:65).",
+                amalan: "Apabila kita berhajatkan sesuatu namun ianya selalu gagal, maka amalkan zikir ini sebanyak 305 kali setiap hari, Insya Allah segala hajat akan berhasil."
+            },
+            {
+                id: 70,
+                arabic: "اَلْمُقْتَدِرُ",
+                rumi: "Ya Muqtadir",
+                meaning: "Maha Menentukan",
+                penerangan: "Kekuasaan Allah meliputi segala sesuatu dan menentukan setiap kejadian dengan sempurna. Dalil: \"Di sisi Tuhan Yang Maha Kuasa, lagi Yang Berkuasa melakukan sekehendak-Nya.\" (Surah Al-Qamar 54:55).",
+                amalan: "Agar tercapai tujuan yang dikehendaki, selain dari berikhtiar secara lahiriah, maka berzikirlah dengan zikir ini seberapa mampu sehingga ikhtiar kita itu berhasil kerana zikir ini akan mempercepatkan keberhasilan hajat kita."
+            },
+            {
+                id: 71,
+                arabic: "اَلْمُقَدِّمُ",
+                rumi: "Ya Muqaddim",
+                meaning: "Maha Mendahulukan",
+                penerangan: "Allah mendahulukan apa yang dikehendaki-Nya mengikut hikmah-Nya. Dalil hadis sahih: \"Engkaulah Yang Mendahulukan dan Engkaulah Yang Mengakhirkan.\" (HR. Bukhari & Muslim).",
+                amalan: "Menurut Imam Ahmad bin Ali Al-Buuniy, beliau berkata: \"Barang siapa yang berzikir dengan zikir ini sebanyak 184 kali setiap hari, Insya Allah, nescaya segala usahanya akan berhasil\"."
+            },
+            {
+                id: 72,
+                arabic: "اَلْمُؤَخِّرُ",
+                rumi: "Ya Mu’ahkhir",
+                meaning: "Maha Melambat-lambatkan",
+                penerangan: "Allah menangguhkan sesuatu perkara seperti azab atau ajal mengikut ketetapan dan kebijaksanaan-Nya. Dalil: Surah Ibrahim (14:42) dan HR. Bukhari & Muslim.",
+                amalan: "Bagi meninggikan lagi ketaatan kita kepada Allah, perbanyakkanlah zikir ini."
+            },
+            {
+                id: 73,
+                arabic: "اَلْأَوَّلُ",
+                rumi: "Ya Awwal",
+                meaning: "Maha Permulaan",
+                penerangan: "Allah wujud sebelum segala sesuatu tanpa permulaan. Dalil: \"Dialah Yang Awal dan Yang Akhir.\" (Surah Al-Hadid 57:3).",
+                amalan: "Barangsiapa yang mengamalkan zikir ini sebanyak 37 kali setiap hari, Insya Allah segala apa yang dihajati akan diperkenankan Allah."
+            },
+            {
+                id: 74,
+                arabic: "اَلْآخِرُ",
+                rumi: "Ya Akhir",
+                meaning: "Maha Penghabisan",
+                penerangan: "Allah kekal abadi selepas binasanya seluruh alam semesta tanpa pengakhiran. Dalil: Surah Al-Hadid (57:3).",
+                amalan: "Amalkan berzikir sebanyak 200 kali sesudah solat 5 waktu selama satu bulan, Insya Allah Tuhan akan membuka pintu rezeki yang halal."
+            },
+            {
+                id: 75,
+                arabic: "اَلظَّاهِرُ",
+                rumi: "Ya Dhaahir",
+                meaning: "Maha Menyatakan / Nyata",
+                penerangan: "Tanda-tanda kewujudan dan kebesaran Allah amat jelas dan nyata pada seluruh alam ciptaan-Nya. Dalil: \"Dan Yang Zahir serta Yang Batin.\" (Surah Al-Hadid 57:3).",
+                amalan: "Diamalkanlah zikir ini sebanyak 1,106 kali selesai solat waktu di tempat yang sunyi (khalwat), nescaya Allah akan membuka hijab padanya dari segala rahsia yang pelik dan sukar serta diberi kefahaman ilmu."
+            },
+            {
+                id: 76,
+                arabic: "اَلْبَاطِنُ",
+                rumi: "Ya Baathinu",
+                meaning: "Maha Tersembunyi",
+                penerangan: "Zat Allah tidak dapat dicapai oleh pandangan mata di dunia, dan Dia Maha Mengetahui segala yang tersembunyi. Dalil: Surah Al-Hadid (57:3).",
+                amalan: "Seperti no. 75 juga tetapi amalkan sebanyak 30 kali sesudah solat fardhu."
+            },
+            {
+                id: 77,
+                arabic: "اَلْوَالِيْ",
+                rumi: "Ya Waaliy",
+                meaning: "Maha Menguasai Urusan",
+                penerangan: "Allah yang memiliki, memerintah, dan menguruskan seluruh urusan alam semesta. Dalil: \"Dan tiada bagi mereka selain daripada Allah, seorang pelindung (pengurus) pun.\" (Surah Ar-Ra'd 13:11).",
+                amalan: "Memperbanyakkan zikir ini setiap pagi & petang boleh menyebabkan seseorang itu menjadi orang yang makrifat, iaitu hatinya dibuka oleh Allah. Difahamkan para wali Allah selalu memperbanyakkan zikir ini."
+            },
+            {
+                id: 78,
+                arabic: "اَلْمُتَعَالِيْ",
+                rumi: "Ya Muta’aAliy",
+                meaning: "Maha Suci / Tinggi",
+                penerangan: "Allah Maha Tinggi daripada segala sifat makhluk dan segala kekurangan. Dalil: \"Yang Maha Besar, lagi Maha Tinggi.\" (Surah Ar-Ra'd 13:9).",
+                amalan: "Sekiranya kita akan berjumpa dengan mereka yang berkedudukan tinggi atau mereka yang sukar untuk ditemui, maka bacalah zikir ini sebanyak mungkin sewaktu mengadap. Insya Allah dengan mudah kita akan berjumpa dengannya & segala hajat yang penting-penting akan berhasil."
+            },
+            {
+                id: 79,
+                arabic: "اَلْبَرُّ",
+                rumi: "Ya Barr",
+                meaning: "Maha Bagus (Sumber Segala Kebaikan)",
+                penerangan: "Allah melimpahkan segala kebaikan, rahmat, dan ihsan kepada seluruh makhluk-Nya. Dalil: \"Sesungguhnya Dialah Yang Melimpahkan kebaikan, lagi Maha Mengasihani.\" (Surah At-Tur 52:28).",
+                amalan: "Diamalkanlah zikir ini sebanyak mungkin setiap hari, Insya Allah segala apa yang kita hajati akan terlaksana dengan mudah."
+            },
+            {
+                id: 80,
+                arabic: "اَلتَّوَّابُ",
+                rumi: "Ya Tawwaab",
+                meaning: "Maha Penerima Taubat",
+                penerangan: "Allah sentiasa menerima taubat hamba-Nya yang kembali insaf dan mengampuni kesalahan mereka. Dalil: \"Sesungguhnya Allah Maha Penerima taubat, lagi Maha Mengasihani.\" (Surah Al-Baqarah 2:37).",
+                amalan: "Bagi orang yang selalu membuat dosa & ingin bertaubat maka hendaklah memperbanyakkan zikir ini supaya dengan mudah diberikan petunjuk kembali ke jalan yang lurus."
+            },
+            {
+                id: 81,
+                arabic: "اَلْمُنْتَقِمُ",
+                rumi: "Ya Muntaqim",
+                meaning: "Maha Penyiksa / Pembalas",
+                penerangan: "Allah membalas kezaliman golongan yang derhaka dan melampaui batas dengan hukuman yang setimpal. Dalil: \"Sesungguhnya Kami tetap membalas orang-orang yang berdosa.\" (Surah As-Sajdah 32:22).",
+                amalan: "Jika kita berhadapan dengan orang yang zalim, supaya dia tidak melakukan kezalimannya terhadap kita, maka hendaklah kita memperbanyakkan zikir ini setiap kali sesudah solat fardhu. Insya Allah, kita akan mendapat pertolongan Allah."
+            },
+            {
+                id: 82,
+                arabic: "اَلْعَفُوُّ",
+                rumi: "Ya ‘Afuww",
+                meaning: "Maha Pemaaf",
+                penerangan: "Allah menghapuskan dan memaafkan dosa hamba-Nya sepenuhnya sehingga tiada lagi kesannya. Dalil: \"Sesungguhnya Allah Maha Pemaaf, lagi Maha Pengampun.\" (Surah Al-Hajj 22:60).",
+                amalan: "Barangsiapa memperbanyakkan zikir ini, nescaya dia akan diampuni segala dosanya oleh Allah."
+            },
+            {
+                id: 83,
+                arabic: "اَلرَّؤُوْفُ",
+                rumi: "Ya Rauuf",
+                meaning: "Maha Mengasihi / Belas Kasihan",
+                penerangan: "Allah amat melimpah belas kasihan-Nya terhadap hamba-hamba-Nya melebihi kasih sayang seorang ibu. Dalil: \"Sesungguhnya Allah Amat Melimpah belas kasihan-Nya kepada sekalian manusia.\" (Surah Al-Baqarah 2:143).",
+                amalan: "Bagi sesiapa yang inginkan dirinya disenangi oleh teman atau sesiapa sahaja yang memandangnya, amalkan zikir ini seberapa mampu sama ada pada waktu siang mahupun malam."
+            },
+            {
+                id: 84,
+                arabic: "مَالِكُ الْمُلْكِ",
+                rumi: "Ya Maalikul Mulk",
+                meaning: "Maha Pemilik Kekuasaan",
+                penerangan: "Allah adalah Pemilik mutlak segala kerajaan di langit dan di bumi; Dia memberi dan mencabut kuasa daripada sesiapa yang dikehendaki-Nya. Dalil: \"Wahai Tuhan yang mempunyai kuasa pemerintahan!\" (Surah Ali Imran 3:26).",
+                amalan: "Seseorang pengarah atau ketua yang ingin kedudukan yang kekal & tetap tanpa diganggu gugat, hendaklah selalu mengamalkan zikir ini sebanyak 212 kali sesudah solat fardhu & 212 pada setiap malam selama sebulan. Insya Allah akan mendapat pertolongan Allah."
+            },
+            {
+                id: 85,
+                arabic: "ذُو الْجَلَالِ وَالْإِكْرَامِ",
+                rumi: "Ya Zul Jalaali wal Ikraam",
+                meaning: "Maha Pemilik Keagungan dan Kemuliaan",
+                penerangan: "Allah pemilik segala kebesaran, keagungan, kemuliaan, dan limpahan kurniaan. Dalil: \"Maha Suci nama Tuhanmu yang mempunyai Kebesaran dan Kemuliaan.\" (Surah Ar-Rahman 55:78).",
+                amalan: "Diamalkanlah zikir ini sebanyak 65 kali setiap hari selama sebulan, Insya Allah segala hajat kita akan tercapai dengan pertolongan Allah."
+            },
+            {
+                id: 86,
+                arabic: "اَلْمُقْسِطُ",
+                rumi: "Ya Muqsith",
+                meaning: "Maha Mengadili / Saksama",
+                penerangan: "Allah Maha Adil dalam segala hukum-Nya dan membela hak orang yang dizalimi. Dalil: \"Yang mentadbirkan (sekalian alam) dengan keadilan.\" (Surah Ali Imran 3:18).",
+                amalan: "Berzikirlah dengan zikir ini mengikut kemampuan, Insya Allah Tuhan akan menganugerahkan sifat adil kepada mereka yang mengamalkannya."
+            },
+            {
+                id: 87,
+                arabic: "اَلْجَامِعُ",
+                rumi: "Ya Jaami’",
+                meaning: "Maha Mengumpulkan",
+                penerangan: "Allah akan menghimpunkan seluruh manusia pada Hari Kiamat tanpa sebarang keraguan untuk dihisab. Dalil: \"Sesungguhnya Engkaulah yang akan menghimpunkan sekalian manusia pada hari yang tidak ada syak padanya.\" (Surah Ali Imran 3:9).",
+                amalan: "Sekiranya ada di kalangan keluarga kita atau isteri kita yang lari dari rumah, maka amalkanlah zikir ini sebanyak mungkin pada setiap hari dengan niat semoga Allah menyedarkan orang tersebut. Dengan izin Allah orang yang lari itu akan pulang dalam jangka waktu yang singkat."
+            },
+            {
+                id: 88,
+                arabic: "اَلْغَنِيُّ",
+                rumi: "Ya Ghaniy",
+                meaning: "Maha Kaya Raya",
+                penerangan: "Allah Maha Kaya yang tidak memerlukan apa-apa daripada makhluk-Nya, bahkan semua makhluk memerlukan-Nya. Dalil: \"Dan Allah Maha Kaya, lagi Maha Terpuji.\" (Surah Fatir 35:15).",
+                amalan: "Diamalkan zikir ini pada setiap hari sebanyak mungkin, Insya Allah apa yang kita usahakan akan cepat berhasil & kekayaan yang kita perolehi itu akan mendapat berkat."
+            },
+            {
+                id: 89,
+                arabic: "اَلْمُغْنِيْ",
+                rumi: "Ya Mughniy",
+                meaning: "Maha Pemberi Kekayaan",
+                penerangan: "Allah yang mengurniakan kekayaan hati dan harta kepada sesiapa yang dikehendaki-Nya. Dalil: \"Dan sesungguhnya Dialah yang memberi kekayaan dan kecukupan.\" (Surah An-Najm 53:48).",
+                amalan: "Mintalah kekayaan yang bermanfaat untuk kehidupan dunia & akhirat kepada Allah dengan memperbanyakkan zikir ini, Insya Allah segala hajat kita akan tercapai."
+            },
+            {
+                id: 90,
+                arabic: "اَلْمَانِعُ",
+                rumi: "Ya Maani’",
+                meaning: "Maha Membela / Menolak",
+                penerangan: "Allah menahan kemudaratan daripada menimpa hamba-Nya yang dikehendaki dan tiada siapa mampu memberi jika Dia menahan. Dalil hadis sahih: \"Ya Allah, tiada yang dapat menghalang apa yang Engkau berikan, dan tiada yang dapat memberi apa yang Engkau halang.\" (HR. Bukhari & Muslim).",
+                amalan: "Andai kita selalu mengamalkan zikir ini sebanyak 161 kali pada waktu menjelang solat subuh setiap hari, Insya Allah kita akan terhindar dari orang-orang yang zalim & suka membuat angkara."
+            },
+            {
+                id: 91,
+                arabic: "اَلضَّارُّ",
+                rumi: "Ya Dhaarr",
+                meaning: "Maha Pembuat Bahaya / Mudarat",
+                penerangan: "Tiada sesuatu mudarat pun yang dapat menimpa makhluk melainkan dengan izin dan hikmah Allah. Dalil: \"Dan jika Allah menimpakan sesuatu bahaya kepadamu, maka tidak ada yang dapat menghapuskannya melainkan Dia.\" (Surah Al-An'am 6:17).",
+                amalan: "Asma ini sangat berguna di dalam ikhtiar kita untuk menyembuhkan sesuatu penyakit yang mana sudah lama dihidapi & telah puas diubati. Amalkanlah zikir ini sebanyak 1001 kali pada setiap hari, Insya Allah dengan ikhtiar ini penyakit itu akan cepat sembuh."
+            },
+            {
+                id: 92,
+                arabic: "اَلنَّافِعُ",
+                rumi: "Ya Naafi’",
+                meaning: "Maha Pemberi Manfaat",
+                penerangan: "Segala kebaikan dan manfaat di dunia dan akhirat datang semata-mata daripada kurniaan Allah. Dalil: \"Dan jika Dia menghendaki kebaikan bagimu, maka tiada sesiapa pun yang dapat menolak limpah kurnia-Nya.\" (Surah Yunus 10:107).",
+                amalan: "Menurut Imam Ahmad Al-Buuniy, barang siapa mengamalkan zikir ini setiap hari, maka bagi orang yang sakit, sakitnya akan sembuh, & bagi orang yang susah akan dihilangkan kesusahannya dengan izin Allah."
+            },
+            {
+                id: 93,
+                arabic: "اَلنُّوْرُ",
+                rumi: "Ya Nuur",
+                meaning: "Maha Pemberi Cahaya",
+                penerangan: "Allah yang menerangi langit dan bumi serta menyinari hati hamba-Nya dengan cahaya iman dan hidayah. Dalil: \"Allah yang menerangi langit dan bumi.\" (Surah An-Nur 24:35).",
+                amalan: "Menurut Sheikh Ahmad bin Muhammad As Shawi, barangsiapa yang menghendaki kemuliaan yang agung & memperolehi apa yang dimaksudkan baik kebaikan dunia mahupun kebaikan di akhirat kelak, maka hendaklah selalu berzikir dengan zikir ini setiap pagi & petang."
+            },
+            {
+                id: 94,
+                arabic: "اَلْهَادِيْ",
+                rumi: "Ya Haadiy",
+                meaning: "Maha Pemberi Petunjuk",
+                penerangan: "Allah yang memberi hidayah dan membimbing hamba-hamba-Nya ke jalan yang lurus. Dalil: \"Dan cukuplah Tuhanmu menjadi Pemimpin (Pemberi petunjuk) dan Penolong.\" (Surah Al-Furqan 25:31).",
+                amalan: "Bagi sesiapa yang dalam perjalanan ke suatu tempat tertentu, kemudian ia tersesat, hendaklah ia memohon petunjuk Allah dengan memperbanyakkan zikir ini, Insya Allah akan diberikan pertolongan Allah dan akan cepat lepas dari kesesatan tersebut."
+            },
+            {
+                id: 95,
+                arabic: "اَلْبَدِيْعُ",
+                rumi: "Ya Baadii",
+                meaning: "Maha Indah / Tiada Bandingan",
+                penerangan: "Allah menciptakan langit dan bumi dengan begitu indah tanpa meniru mana-mana contoh terdahulu. Dalil: \"Dialah yang menciptakan langit dan bumi (dengan seindah-indahnya tanpa contoh).\" (Surah Al-Baqarah 2:117).",
+                amalan: "Andai kita mempunyai rancangan yang sangat penting dan bagi memastikan rancangan kita itu berjaya & berjalan lancar, maka berzikirlah dengan zikir ini sebanyak 500 kali selepas solat fardhu. Insya Allah Tuhan akan memberikan pertolongan hingga rancangan kita berjaya & berjalan lancar."
+            },
+            {
+                id: 96,
+                arabic: "اَلْبَاقِيْ",
+                rumi: "Ya Baaqy",
+                meaning: "Maha Kekal",
+                penerangan: "Allah kekal abadi selama-lamanya manakala segala makhluk pasti akan binasa. Dalil: \"Dan kekallah Zat Tuhanmu yang mempunyai Kebesaran dan Kemuliaan.\" (Surah Ar-Rahman 55:27).",
+                amalan: "Diamalkan zikir ini sebanyak mungkin tanpa mengira batas waktu, Insya Allah dengan ikhtiar ini semua pekerjaan yang telah menjadi punca rezeki tidak akan mudah terlepas, perniagaan tidak akan rugi atau bankrap dengan berkat zikir ini."
+            },
+            {
+                id: 97,
+                arabic: "اَلْوَارِثُ",
+                rumi: "Ya Waarits",
+                meaning: "Maha Membahagi / Mewarisi",
+                penerangan: "Allah yang kekal mewarisi seluruh langit dan bumi selepas segala makhluk kembali kepada-Nya. Dalil: \"Dan Kamilah yang mewarisi segala-galanya.\" (Surah Al-Hijr 15:23).",
+                amalan: "Sekiranya kita berzikir sebanyak 500 kali selepas solat fardhu atau sebagainya, supaya segala urusan kita itu berjalan lancar, maka hendaklah pada setiap malam berzikir dengan zikir ini sebanyak 707 kali. Insya Allah berkat zikir ini Allah akan memberi petunjuk sehingga usaha kita akan berhasil dengan baik & memberangsangkan."
+            },
+            {
+                id: 98,
+                arabic: "اَلرَّشِيْدُ",
+                rumi: "Ya Rasyiid",
+                meaning: "Maha Pandai / Bijaksana",
+                penerangan: "Segala perbuatan, ketetapan, dan bimbingan Allah berada di atas kebijaksanaan yang paling tepat. Dalil: \"Berilah kami pimpinan yang tepat dalam urusan kami.\" (Surah Al-Kahfi 18:10).",
+                amalan: "Walaupun kita tergolong dalam golongan yang cerdas otak, namun biasakanlah zikir ini sebanyak mungkin, nescaya otak kita akan menjadi bertambah cerdas."
+            },
+            {
+                id: 99,
+                arabic: "اَلصَّبُوْرُ",
+                rumi: "Ya Shabuur",
+                meaning: "Maha Penyabar",
+                penerangan: "Allah Maha Penyabar yang tidak terburu-buru menghukum hamba yang derhaka dan sentiasa membuka pintu taubat. Dalil hadis sahih: \"Tiada seorang pun yang lebih sabar terhadap perkara menyakitkan yang didengarnya melebihi Allah.\" (HR. Bukhari & Muslim).",
+                amalan: "Agar kita diberi kesabaran oleh Allah dalam segala hal, maka perbanyakkanlah zikir ini menurut kemampuan. Dengan sifat sabar & penuh pengharapan kepada Allah, maka segala usaha & upaya akan mencapai kejayaan."
+            }
+        ];
+
+        // Pemboleh Ubah Keadaan Aplikasi
+        let currentIndex = 0;
+        let isAnimating = false;
+        let activePanel = null;
+        let nameAudioPlayer = null;
+        let sudaisAudioPlayer = null;
+        let isSudaisPlaying = false;
+        let currentSudaisRef = null;
+        let toastTimer = null;
+
+        // Elemen DOM
         const arabicText = document.getElementById('arabicText');
         const rumiText = document.getElementById('rumiText');
         const meaningText = document.getElementById('meaningText');
@@ -261,6 +1090,7 @@
         const sudaisBtnLabel = document.getElementById('sudaisBtnLabel');
         const sudaisRefBadge = document.getElementById('sudaisRefBadge');
         const btnNameAudio = document.getElementById('btnNameAudio');
+        const btnNavAudio = document.getElementById('btnNavAudio');
         const amalanBox = document.getElementById('amalanBox');
         const amalanTitle = document.getElementById('amalanTitle');
         const amalanText = document.getElementById('amalanText');
@@ -275,9 +1105,75 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const slideContainer = document.getElementById('slideContainer');
+        const toastNotice = document.getElementById('toastNotice');
 
-        // Populate dropdown selector with all 99 names
-// ... existing code ...
+        // Papar mesej ringkas (ganti alert())
+        function showToast(msg) {
+            if (!toastNotice) return;
+            toastNotice.textContent = msg;
+            toastNotice.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toastNotice.classList.add('hidden');
+            }, 2600);
+        }
+
+        // Isi menu dropdown dengan kesemua 99 nama
+        function populateSelector() {
+            if (!nameSelector) return;
+            nameSelector.innerHTML = '';
+            asmaulHusna.forEach((item, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `${item.id}. ${item.rumi}`;
+                opt.className = 'bg-slate-900 text-slate-100';
+                nameSelector.appendChild(opt);
+            });
+        }
+
+        // Muat kedudukan terakhir dari localStorage
+        function init() {
+            populateSelector();
+            try {
+                const savedIndex = localStorage.getItem('asmaulHusnaIndex');
+                if (savedIndex !== null) {
+                    const parsed = parseInt(savedIndex, 10);
+                    if (!isNaN(parsed) && parsed >= 0 && parsed < asmaulHusna.length) {
+                        currentIndex = parsed;
+                    }
+                }
+            } catch (e) {
+                // Abaikan jika localStorage disekat
+            }
+            updateCard(false);
+        }
+
+        // Ekstrak nombor Surah & Ayat dari teks penerangan (contoh: 59:23)
+        function extractQuranReference(text) {
+            if (!text) return null;
+            const match = text.match(/(\d{1,3}):(\d{1,3})/);
+            if (!match) return null;
+            const surah = parseInt(match[1], 10);
+            const ayah = parseInt(match[2], 10);
+            if (surah < 1 || surah > 114 || ayah < 1) return null;
+            return {
+                surah,
+                ayah,
+                label: `QS ${surah}:${ayah}`
+            };
+        }
+
+        // Kemas kini paparan kad
+        function updateCard(animate = true, direction = 'next', autoPlay = false) {
+            stopAllAudio();
+            closeAllInfoPanels();
+
+            const applyContent = () => {
+                const data = asmaulHusna[currentIndex];
+                arabicText.textContent = data.arabic;
+                rumiText.textContent = data.rumi;
+                meaningText.textContent = data.meaning;
+                peneranganText.textContent = data.penerangan;
                 if (amalanTitle) amalanTitle.textContent = `Amalan Zikir (${data.rumi})`;
                 if (amalanText) amalanText.textContent = data.amalan;
                 if (nameSelector) nameSelector.value = currentIndex;
@@ -286,14 +1182,87 @@
                 if (progressBar) progressBar.style.width = `${(data.id / asmaulHusna.length) * 100}%`;
                 cardNumberBg.textContent = data.id;
 
-                // Semak jika ada rujukan ayat Al-Quran (Surah:Ayat) untuk audio Syeikh Al-Sudais
-// ... existing code ...
-        // --- Toggle Penerangan & Amalan (Mobile Bottom Sheet) ---
+                // Semak jika ada rujukan ayat Al-Quran untuk audio Syeikh Al-Sudais
+                currentSudaisRef = extractQuranReference(data.penerangan);
+                if (currentSudaisRef && sudaisAudioContainer) {
+                    sudaisAudioContainer.classList.remove('hidden');
+                    if (sudaisRefBadge) sudaisRefBadge.textContent = currentSudaisRef.label;
+                    if (sudaisBtnLabel) sudaisBtnLabel.textContent = 'Dengar Ayat Dalil (Syeikh Al-Sudais)';
+                } else if (sudaisAudioContainer) {
+                    sudaisAudioContainer.classList.add('hidden');
+                }
+
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === asmaulHusna.length - 1;
+
+                try {
+                    localStorage.setItem('asmaulHusnaIndex', currentIndex);
+                } catch (e) {}
+
+                // Mainkan suara secara automatik apabila kad ditukar
+                if (autoPlay) {
+                    playCurrentNameAudio();
+                }
+            };
+
+            if (!animate) {
+                applyContent();
+                return;
+            }
+
+            isAnimating = true;
+            const outClass = direction === 'next' ? 'fade-out-left' : 'fade-out-right';
+            slideContainer.classList.add(outClass);
+
+            setTimeout(() => {
+                applyContent();
+                slideContainer.classList.remove(outClass);
+                isAnimating = false;
+            }, 200);
+        }
+
+        function nextName() {
+            if (isAnimating || currentIndex >= asmaulHusna.length - 1) return;
+            currentIndex++;
+            updateCard(true, 'next', true);
+        }
+
+        function prevName() {
+            if (isAnimating || currentIndex <= 0) return;
+            currentIndex--;
+            updateCard(true, 'prev', true);
+        }
+
+        function jumpToName(indexStr) {
+            const target = parseInt(indexStr, 10);
+            if (isNaN(target) || target < 0 || target >= asmaulHusna.length || target === currentIndex) return;
+            const dir = target > currentIndex ? 'next' : 'prev';
+            currentIndex = target;
+            updateCard(true, dir, true);
+        }
+
+        // --- Modal Mula Semula ---
+        function openResetModal() {
+            if (resetModal) resetModal.classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            if (resetModal) resetModal.classList.add('hidden');
+        }
+
+        function confirmReset() {
+            closeResetModal();
+            currentIndex = 0;
+            updateCard(true, 'prev', true);
+            showToast('Hafalan dimulakan semula dari Nama #1');
+        }
+
+        // --- Fungsi Laci Bawah (Bottom Sheet) Dalil & Amalan ---
         function closeAllInfoPanels() {
             activePanel = null;
             if (infoSheet) infoSheet.classList.add('translate-y-full');
             setTimeout(() => {
-                if (!activePanel && infoSheetOverlay) {
+                if (activePanel === null && infoSheetOverlay) {
                     infoSheetOverlay.classList.add('hidden');
                 }
             }, 250);
@@ -314,7 +1283,6 @@
                 if (infoSheet) infoSheet.classList.remove('translate-y-full');
             });
 
-            // Reset tab & box styles
             if (peneranganBox) peneranganBox.classList.add('hidden');
             if (amalanBox) amalanBox.classList.add('hidden');
             if (tabPenerangan) tabPenerangan.className = 'flex-1 text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg transition-all text-slate-300';
@@ -333,9 +1301,253 @@
             }
         }
 
-        // --- Audio Functionality ---
-// ... existing code ...
-        // --- Touch Swipe Support (Enhanced Mobile Drag Feel) ---
+        // --- Fungsi Audio (MP3 Islamic Network, SpeechSynthesis ar-SA & Bacaan Syeikh Al-Sudais) ---
+        function setNameAudioPlayingUI(isPlaying) {
+            if (btnNameAudio) {
+                btnNameAudio.classList.toggle('animate-pulse', isPlaying);
+                btnNameAudio.classList.toggle('bg-teal-600', isPlaying);
+                btnNameAudio.classList.toggle('ring-2', isPlaying);
+                btnNameAudio.classList.toggle('ring-teal-300', isPlaying);
+            }
+            if (btnNavAudio) {
+                btnNavAudio.classList.toggle('animate-pulse', isPlaying);
+                btnNavAudio.classList.toggle('bg-teal-700', isPlaying);
+                btnNavAudio.classList.toggle('text-white', isPlaying);
+            }
+        }
+
+        function stopAllAudio() {
+            try {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+            } catch (e) {}
+
+            if (nameAudioPlayer) {
+                try {
+                    nameAudioPlayer.onended = null;
+                    nameAudioPlayer.onerror = null;
+                    nameAudioPlayer.pause();
+                    nameAudioPlayer.currentTime = 0;
+                } catch (e) {}
+                nameAudioPlayer = null;
+            }
+
+            if (sudaisAudioPlayer) {
+                try {
+                    sudaisAudioPlayer.onplaying = null;
+                    sudaisAudioPlayer.onended = null;
+                    sudaisAudioPlayer.onerror = null;
+                    sudaisAudioPlayer.pause();
+                    sudaisAudioPlayer.currentTime = 0;
+                } catch (e) {}
+                sudaisAudioPlayer = null;
+            }
+            isSudaisPlaying = false;
+            if (sudaisBtnLabel) sudaisBtnLabel.textContent = 'Dengar Ayat Dalil (Syeikh Al-Sudais)';
+            setNameAudioPlayingUI(false);
+        }
+
+        // Format teks Arab khusus untuk bacaan tajwid & wakaf sukun yang tepat
+        function formatArabicForWaqf(arabicStr) {
+            let text = arabicStr.trim();
+
+            // Penyelarasan ejaan khusus supaya enjin suara Arab menyebut tafkhim & mad dengan tepat
+            if (text === 'اَللّٰهُ') return 'اَللّٰهُ';
+            if (text === 'اَلرَّحْمٰنُ') return 'اَلرَّحْمَانْ';
+
+            // Tukar alif khanjariyah (ٰ) kepada alif mad biasa supaya mad 2 harakat dibaca jelas
+            text = text.replace(/\u0670/g, 'ا');
+
+            // Jika berakhir dengan syaddah + baris pendek (cth: اَلْحَقُّ), buang baris pendek sahaja
+            if (/[\u0651][\u064E\u064F\u0650]$/.test(text)) {
+                return text.replace(/([\u0651])[\u064E\u064F\u0650]$/, '$1');
+            }
+            // Jika berakhir dengan baris pendek (fathah/dammah/kasrah), tukar kepada sukun (wakaf)
+            if (/[\u064E\u064F\u0650]$/.test(text)) {
+                return text.replace(/[\u064E\u064F\u0650]$/, '\u0652');
+            }
+            return text;
+        }
+
+        // Cari suara Arab terbaik yang tersedia dalam pelayar (utamakan suara lelaki Arab Saudi)
+        function pickBestArabicVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            const voices = window.speechSynthesis.getVoices() || [];
+            const arabicVoices = voices.filter(v => (v.lang || '').toLowerCase().startsWith('ar'));
+            if (arabicVoices.length === 0) return null;
+
+            const maleKeywords = ['maged', 'majed', 'tariq', 'tarik', 'naayf', 'hamed', 'hamid', 'male', 'saudi'];
+            const preferred = arabicVoices.find(v => {
+                const name = (v.name || '').toLowerCase();
+                return maleKeywords.some(k => name.includes(k));
+            });
+            if (preferred) return preferred;
+
+            const saVoice = arabicVoices.find(v => (v.lang || '').toLowerCase() === 'ar-sa');
+            return saVoice || arabicVoices[0];
+        }
+
+        // Mainkan sebutan Arab menggunakan speechSynthesis (ar-SA) dengan teks Arab berbaris penuh
+        function playArabicSpeechSynthesis(arabicStr) {
+            const waqfArabic = formatArabicForWaqf(arabicStr);
+
+            if (!('speechSynthesis' in window)) {
+                setNameAudioPlayingUI(false);
+                showToast('Pelayar anda tidak menyokong sintesis suara Arab.');
+                return;
+            }
+
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(waqfArabic);
+                utterance.lang = 'ar-SA';
+                const arabicVoice = pickBestArabicVoice();
+                if (arabicVoice) {
+                    utterance.voice = arabicVoice;
+                }
+                utterance.rate = 0.85;
+                utterance.pitch = 1.0;
+
+                setNameAudioPlayingUI(true);
+
+                utterance.onend = () => {
+                    setNameAudioPlayingUI(false);
+                };
+                utterance.onerror = () => {
+                    setNameAudioPlayingUI(false);
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } catch (err) {
+                setNameAudioPlayingUI(false);
+            }
+        }
+
+        // Mainkan audio nama Allah:
+        // - Nama #1 (Ya Allah): terus guna speechSynthesis ar-SA
+        // - Nama #2..#99: cuba MP3 islamic.network dengan pelarasan indeks (id - 1 -> 001.mp3, 002.mp3, ...)
+        // - Fallback automatik ke speechSynthesis ar-SA jika audio luar disekat/gagal
+        function playCurrentNameAudio() {
+            stopAllAudio();
+            const data = asmaulHusna[currentIndex];
+            if (!data) return;
+
+            // Nama #1 (Ya Allah) menggunakan speechSynthesis bahasa ar-SA dengan teks Arab berbaris penuh
+            if (data.id === 1) {
+                playArabicSpeechSynthesis(data.arabic);
+                return;
+            }
+
+            // Pelarasan indeks: Nama #2 (Ar-Rahman) -> 001.mp3, Nama #3 (Ar-Rahim) -> 002.mp3, dst.
+            const mp3Number = String(data.id - 1).padStart(3, '0');
+            const mp3Url = `https://islamic.network/asma-al-husna/audio/${mp3Number}.mp3`;
+
+            let fallbackTriggered = false;
+            const triggerFallback = () => {
+                if (fallbackTriggered) return;
+                fallbackTriggered = true;
+                if (nameAudioPlayer) {
+                    try {
+                        nameAudioPlayer.onended = null;
+                        nameAudioPlayer.onerror = null;
+                        nameAudioPlayer.pause();
+                    } catch (e) {}
+                    nameAudioPlayer = null;
+                }
+                playArabicSpeechSynthesis(data.arabic);
+            };
+
+            try {
+                nameAudioPlayer = new Audio(mp3Url);
+                setNameAudioPlayingUI(true);
+
+                nameAudioPlayer.onended = () => {
+                    setNameAudioPlayingUI(false);
+                    nameAudioPlayer = null;
+                };
+
+                nameAudioPlayer.onerror = () => {
+                    triggerFallback();
+                };
+
+                const playPromise = nameAudioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        triggerFallback();
+                    });
+                }
+            } catch (e) {
+                triggerFallback();
+            }
+        }
+
+        // Mainkan bacaan ayat Al-Quran sebenar oleh Syeikh Abdul Rahman Al-Sudais
+        async function playSudaisAyahAudio() {
+            if (!currentSudaisRef) return;
+
+            if (isSudaisPlaying) {
+                stopAllAudio();
+                return;
+            }
+
+            stopAllAudio();
+
+            const surahPad = String(currentSudaisRef.surah).padStart(3, '0');
+            const ayahPad = String(currentSudaisRef.ayah).padStart(3, '0');
+            const primaryUrl = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${surahPad}${ayahPad}.mp3`;
+
+            const startSudaisPlayback = (url, allowApiFallback) => {
+                try {
+                    sudaisAudioPlayer = new Audio(url);
+                    isSudaisPlaying = true;
+                    if (sudaisBtnLabel) sudaisBtnLabel.textContent = 'Memuatkan bacaan...';
+
+                    sudaisAudioPlayer.onplaying = () => {
+                        if (sudaisBtnLabel) sudaisBtnLabel.textContent = 'Hentikan Bacaan (Syeikh Al-Sudais)';
+                    };
+                    sudaisAudioPlayer.onended = () => {
+                        stopAllAudio();
+                    };
+                    sudaisAudioPlayer.onerror = async () => {
+                        if (allowApiFallback) {
+                            try {
+                                const res = await fetch(`https://api.alquran.cloud/v1/ayah/${currentSudaisRef.surah}:${currentSudaisRef.ayah}/ar.abdurrahmaanasudais`);
+                                const json = await res.json();
+                                if (json && json.data && json.data.audio) {
+                                    startSudaisPlayback(json.data.audio, false);
+                                    return;
+                                }
+                            } catch (apiErr) {}
+                        }
+                        stopAllAudio();
+                        showToast('Gagal memuatkan audio Syeikh Al-Sudais. Semak sambungan internet.');
+                    };
+
+                    const p = sudaisAudioPlayer.play();
+                    if (p !== undefined) {
+                        p.catch(() => {
+                            stopAllAudio();
+                            showToast('Sila tekan sekali lagi untuk memulakan audio.');
+                        });
+                    }
+                } catch (e) {
+                    stopAllAudio();
+                    showToast('Audio tidak dapat dimainkan.');
+                }
+            };
+
+            startSudaisPlayback(primaryUrl, true);
+        }
+
+        // Muatkan senarai suara pelayar awal-awal
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        // --- Sokongan Leret Sentuhan (Touch Swipe) ---
         let touchstartX = 0;
         let touchstartY = 0;
         let isHorizontalSwipe = false;
@@ -355,7 +1567,6 @@
 
             if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
                 isHorizontalSwipe = true;
-                // Beri kesan pergerakan kad mengikut jari secara lembut
                 const dampedX = Math.max(-90, Math.min(90, diffX * 0.45));
                 slideContainer.style.transform = `translateX(${dampedX}px)`;
             }
@@ -374,7 +1585,7 @@
             }
         }, { passive: true });
 
-        // --- Keyboard Navigation ---
+        // --- Navigasi Papan Kekunci ---
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeAllInfoPanels();
@@ -388,8 +1599,10 @@
             }
         });
 
-        // Run initialization
-        init();
+        // Mulakan aplikasi apabila halaman siap dimuatkan
+        window.onload = function () {
+            init();
+        };
     </script>
 </body>
 </html>
